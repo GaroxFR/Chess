@@ -29,11 +29,13 @@ public abstract class Piece {
         return this.alive;
     }
 
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
     public abstract Set<Move> computePossibleMoves(Board board);
 
-    public void playMove(Move move) {
-        if (move.getStartPosition().equals(this.position)) {
-            this.position = move.getEndPosition();
-        }
+    public void setPosition(Position position) {
+        this.position = position;
     }
 }

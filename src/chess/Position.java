@@ -29,6 +29,10 @@ public class Position {
         return this.x == position.x && this.y == position.y;
     }
 
+    public Position multiply(int scale) {
+        return new Position(this.x * scale, this.y * scale);
+    }
+
     public Position add(int x, int y) {
         return new Position(this.x + x, this.y + y);
     }

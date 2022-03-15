@@ -25,6 +25,6 @@ public class Rook extends SlidingPiece {
 
     @Override
     protected Position[] getSlidingDirections() {
-        return Rook.DIRECTIONS;;
+        return Rook.DIRECTIONS;
     }
 }

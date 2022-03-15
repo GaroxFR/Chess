@@ -13,6 +13,16 @@ public class King extends Piece{
     private int move;
     private boolean played; //pour le roque, si pièce déjà jouée
     private boolean roque; //si le roque a été joué
+    private static final Position[] DIRECTIONS = {
+            new Position(0, 1),
+            new Position(1, 0),
+            new Position(0, -1),
+            new Position(-1, 0),
+            new Position(1, 1),
+            new Position(1, -1),
+            new Position(-1, -1),
+            new Position(-1, 1)
+    };
 
     public King(Team team, Position position) {
         super(team, position);
@@ -25,26 +35,6 @@ public class King extends Piece{
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();
 
-        Position nextPosition = this.position.add(0, this.move);
-        if (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
-            moves.add(new Move(this.position, nextPosition, this));
-        }
-
-        nextPosition = this.position.add(0, -this.move);
-        if (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
-            moves.add(new Move(this.position, nextPosition, this));
-        }
-
-        nextPosition = this.position.add(this.move,0);
-        if (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
-            moves.add(new Move(this.position, nextPosition, this));
-        }
-
-        nextPosition = this.position.add(-this.move,0);
-        if (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
-            moves.add(new Move(this.position, nextPosition, this));
-        }
-
         //détecter l'échec et mat : si la position finale de la piece fait partie des coups possibles d'une piece de l'autre team
         /*le roque :
         nextPosition = ;
@@ -53,6 +43,11 @@ public class King extends Piece{
         if(!played && la tour1 n'a pas encore été jouée && rook1.position)
         */
 
+        for (Position direction : King.DIRECTIONS) {
+            if ((direction.isInBoard() && board.getPiece(direction) == null) || (board.getPiece(direction) != null && board.getPiece(direction).getTeam() != this.team)) {
+                moves.add(new Move(this.position, direction, this, board.getPiece(direction)));
+            }
+        }
         return moves;
     }
 }

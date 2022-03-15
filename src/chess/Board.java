@@ -29,13 +29,14 @@ public class Board {
             move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
         }
 
+        this.setPiece(move.getStartPosition(), null);
         this.setPiece(move.getEndPosition(), move.getPiece());
         this.switchTurn();
-        this.computePossibleMove();
     }
 
     public void unmakeMove(Move move) {
         this.setPiece(move.getStartPosition(), move.getPiece());
+        this.setPiece(move.getEndPosition(), null);
 
         if (move.isCapture()) {
             this.setPiece(move.getCapturedPiece().getPosition(), move.getCapturedPiece());
@@ -43,7 +44,6 @@ public class Board {
         }
 
         this.switchTurn();
-        this.computePossibleMove();
     }
 
     public void switchTurn() {
@@ -60,8 +60,9 @@ public class Board {
         }
 
         int sum = 0;
-
-        for (Move possibleMove : new HashSet<>(this.possibleMoves)) {
+        this.computePossibleMove();
+        Set<Move> copyMove =  new HashSet<>(this.possibleMoves);
+        for (Move possibleMove : copyMove) {
             this.makeMove(possibleMove);
             sum += this.countPossibleMoves(depth - 1);
             this.unmakeMove(possibleMove);
@@ -135,7 +136,11 @@ public class Board {
     }
 
     public void setPiece(Position position, Piece piece) {
-        piece.setPosition(position);
+        if (piece != null) {
+            piece.setPosition(position);
+        }
         this.setPiece(position.getX(), position.getY(), piece);
     }
+
+
 }

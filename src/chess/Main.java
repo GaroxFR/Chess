@@ -5,8 +5,6 @@ public class Main {
         Board board = new Board();
         board.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w");
 
-        System.out.println(board.countPossibleMoves(2));
-
         for (int i = 1; i < 9; i++) {
             long time = System.currentTimeMillis();
             int count = board.countPossibleMoves(i);

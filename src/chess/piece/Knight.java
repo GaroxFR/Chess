@@ -5,12 +5,21 @@ import chess.Move;
 import chess.Position;
 import chess.player.Team;
 
-import java.util.ArrayList;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Knight extends Piece {
-    
+
+    private static Image ImgPieceWhite;
+    private static Image ImgPieceBlack;
+
+    static {
+        Knight.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/cavalier_b.png");
+        Knight.ImgPieceBlack = Toolkit.getDefaultToolkit().getImage("res/cavalier_n.png");
+    }
+
     private static final Position[] DIRECTIONS = {
             new Position(1, 2),
             new Position(1, -2),
@@ -43,5 +52,12 @@ public class Knight extends Piece {
         return moves;
     }
 
-    
+
+    public Image getImage() {
+        if (this.team == Team.WHITE) {
+            return ImgPieceWhite;
+        } else {
+            return ImgPieceBlack;
+        }
+    }
 }

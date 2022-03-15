@@ -21,9 +21,11 @@ public class Rook extends Piece{
         Set<Move> moves = new HashSet<>();
         for(int i = -1; i <= 1; i+=2) {
             Position nextPosition = this.position.add(0, i);
-            while (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
-                moves.add(new Move(this.position, nextPosition, this));
-                nextPosition = nextPosition.add(0,i);
+            while (nextPosition.isInBoard()) {
+                if( board.getPiece(nextPosition) == null) {
+                    moves.add(new Move(this.position, nextPosition, this));
+                    nextPosition = nextPosition.add(0, i);
+                }
                 if (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeam() != this.team) {
                     moves.add(new Move(this.position, nextPosition, this, board.getPiece(this.position)));
                     break;
@@ -32,9 +34,11 @@ public class Rook extends Piece{
         }
         for(int i = -1; i <= 1; i+=2) {
             Position nextPosition = this.position.add(i, 0);
-            while (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
-                moves.add(new Move(this.position, nextPosition, this));
-                nextPosition = nextPosition.add(i,0);
+            while (nextPosition.isInBoard()) {
+                if( board.getPiece(nextPosition) == null) {
+                    moves.add(new Move(this.position, nextPosition, this));
+                    nextPosition = nextPosition.add(i, 0);
+                }
                 if (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeam() != this.team) {
                     moves.add(new Move(this.position, nextPosition, this, board.getPiece(this.position)));
                     break;

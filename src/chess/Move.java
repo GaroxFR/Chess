@@ -12,10 +12,7 @@ public class Move {
     private final Piece capturedPiece;
 
     public Move(Position startPosition, Position endPosition, Piece piece) {
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
-        this.piece = piece;
-        this.capturedPiece = null;
+        this(startPosition, endPosition, piece, null);
     }
 
     public Move(Position startPosition, Position endPosition, Piece piece, Piece capturedPiece) {

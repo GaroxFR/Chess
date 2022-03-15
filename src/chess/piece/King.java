@@ -14,7 +14,7 @@ public class King extends Piece{
     private boolean played; //pour le roque, si pièce déjà jouée
     private boolean roque; //si le roque a été joué
 
-    public King(Team team, Position position, int move,boolean played, boolean roque) {
+    public King(Team team, Position position) {
         super(team, position);
         this.move = 1;
         this.played = false;

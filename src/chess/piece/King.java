@@ -5,6 +5,7 @@ import chess.Move;
 import chess.Position;
 import chess.player.Team;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,14 @@ public class King extends Piece{
     private int move;
     private boolean played; //pour le roque, si pièce déjà jouée
     private boolean roque; //si le roque a été joué
+    private static Image ImgPieceWhite;
+    private static Image ImgPieceBlack;
+
+    static {
+        King.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/roi_b.png");
+        King.ImgPieceBlack = Toolkit.getDefaultToolkit().getImage("res/roi_n.png");
+    }
+
     private static final Position[] DIRECTIONS = {
             new Position(0, 1),
             new Position(1, 0),
@@ -49,5 +58,13 @@ public class King extends Piece{
             }
         }
         return moves;
+    }
+
+    public Image getImage() {
+        if (this.team == Team.WHITE) {
+            return ImgPieceWhite;
+        } else {
+            return ImgPieceBlack;
+        }
     }
 }

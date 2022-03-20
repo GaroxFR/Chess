@@ -3,7 +3,17 @@ package chess.piece;
 import chess.Position;
 import chess.player.Team;
 
+import java.awt.*;
+
 public class Queen extends SlidingPiece {
+
+    private static Image ImgPieceWhite;
+    private static Image ImgPieceBlack;
+
+    static {
+        Queen.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/reine_b.png");
+        Queen.ImgPieceBlack = Toolkit.getDefaultToolkit().getImage("res/reine_n.png");
+    }
 
     private static final Position[] DIRECTIONS = {
             // Diagonales
@@ -25,5 +35,13 @@ public class Queen extends SlidingPiece {
     @Override
     protected Position[] getSlidingDirections() {
         return Queen.DIRECTIONS;
+    }
+
+    public Image getImage() {
+        if (this.team == Team.WHITE) {
+            return ImgPieceWhite;
+        } else {
+            return ImgPieceBlack;
+        }
     }
 }

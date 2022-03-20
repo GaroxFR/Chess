@@ -5,10 +5,19 @@ import chess.Move;
 import chess.Position;
 import chess.player.Team;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Rook extends SlidingPiece {
+
+    private static Image ImgPieceWhite;
+    private static Image ImgPieceBlack;
+
+    static {
+        Rook.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/tour_b.png");
+        Rook.ImgPieceBlack = Toolkit.getDefaultToolkit().getImage("res/tour_n.png");
+    }
 
     private static final Position[] DIRECTIONS = {
             // Lignes
@@ -26,5 +35,13 @@ public class Rook extends SlidingPiece {
     @Override
     protected Position[] getSlidingDirections() {
         return Rook.DIRECTIONS;
+    }
+
+    public Image getImage() {
+        if (this.team == Team.WHITE) {
+            return ImgPieceWhite;
+        } else {
+            return ImgPieceBlack;
+        }
     }
 }

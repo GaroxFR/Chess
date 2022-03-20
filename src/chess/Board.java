@@ -141,6 +141,4 @@ public class Board {
         }
         this.setPiece(position.getX(), position.getY(), piece);
     }
-
-
 }

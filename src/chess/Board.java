@@ -4,9 +4,7 @@ import chess.piece.*;
 import chess.player.Player;
 import chess.player.Team;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class Board {
 
@@ -14,6 +12,8 @@ public class Board {
     private Player[] players = new Player[2];
     private final Set<Move> possibleMoves = new HashSet<>();
     private Team toPlay = Team.WHITE;
+
+    private Piece selectedPiece = null;
 
     public Board() {
     }
@@ -27,6 +27,7 @@ public class Board {
     public void makeMove(Move move) {
         if (move.isCapture()) {
             move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
+            this.setPiece(move.getCapturedPiece().getPosition(), null);
         }
 
         this.setPiece(move.getStartPosition(), null);
@@ -63,7 +64,14 @@ public class Board {
         this.computePossibleMove();
         Set<Move> copyMove =  new HashSet<>(this.possibleMoves);
         for (Move possibleMove : copyMove) {
+
             this.makeMove(possibleMove);
+            /*BoardPanel.INSTANCE.repaint();
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }*/
             sum += this.countPossibleMoves(depth - 1);
             this.unmakeMove(possibleMove);
         }
@@ -140,5 +148,33 @@ public class Board {
             piece.setPosition(position);
         }
         this.setPiece(position.getX(), position.getY(), piece);
+    }
+
+    public void onClick(int x, int y) {
+        Piece piece = this.getPiece(x, y);
+        if (piece != null && piece.getTeam() == this.toPlay) {
+            this.selectedPiece = piece;
+        } else {
+            Optional<Move> moveOptional = this.getSelectedPieceMove(new Position(x, y));
+            if (moveOptional.isPresent()) {
+                this.makeMove(moveOptional.get());
+                this.computePossibleMove();
+            }
+            this.selectedPiece = null;
+        }
+    }
+
+    public List<Move> getSelectedPieceMoves() {
+        if (this.selectedPiece == null) {
+            return new ArrayList<>();
+        }
+        return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece).toList();
+    }
+
+    public Optional<Move> getSelectedPieceMove(Position endPosition) {
+        if (this.selectedPiece == null) {
+            return Optional.empty();
+        }
+        return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece && move.getEndPosition().equals(endPosition)).findFirst();
     }
 }

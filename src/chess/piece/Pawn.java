@@ -43,14 +43,14 @@ public class Pawn extends Piece {
         }
 
         nextPosition = this.position.add(0, 2 * this.moveDirection);
-        if (this.position.getY() == this.doubleMoveRaw && nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
+        if (this.position.getY() == this.doubleMoveRaw && nextPosition.isInBoard() && board.getPiece(this.position.add(0, this.moveDirection)) == null &&  board.getPiece(nextPosition) == null) {
             moves.add(new Move(this.position, nextPosition, this));
         }
 
         for (int i = -1; i <= 1; i+=2) {
             nextPosition = this.position.add(i, this.moveDirection);
             if (nextPosition.isInBoard() && board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeam() != this.team) {
-                moves.add(new Move(this.position, nextPosition, this, board.getPiece(this.position)));
+                moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
             }
         }
 

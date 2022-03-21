@@ -53,8 +53,9 @@ public class King extends Piece{
         */
 
         for (Position direction : King.DIRECTIONS) {
-            if ((direction.isInBoard() && board.getPiece(direction) == null) || (board.getPiece(direction) != null && board.getPiece(direction).getTeam() != this.team)) {
-                moves.add(new Move(this.position, direction, this, board.getPiece(direction)));
+            Position nextPosition = this.position.add(direction);
+            if (nextPosition.isInBoard() && (board.getPiece(nextPosition) == null || (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeam() != this.team))) {
+                moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
             }
         }
         return moves;

@@ -5,6 +5,7 @@ import chess.Move;
 import chess.Position;
 import chess.player.Team;
 
+import java.awt.*;
 import java.util.Set;
 
 public abstract class Piece {
@@ -38,4 +39,6 @@ public abstract class Piece {
     public void setPosition(Position position) {
         this.position = position;
     }
+
+    public abstract Image getImage();
 }

@@ -39,4 +39,5 @@ public class Bishop extends SlidingPiece {
         }
     }
 
+
 }

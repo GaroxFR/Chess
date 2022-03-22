@@ -1,5 +1,7 @@
 package chess;
 
+import java.util.Objects;
+
 public class Position {
     private int x;
     private int y;
@@ -27,6 +29,11 @@ public class Position {
         }
         Position position = (Position) o;
         return this.x == position.x && this.y == position.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.x, this.y);
     }
 
     public Position multiply(int scale) {

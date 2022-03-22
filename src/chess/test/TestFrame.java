@@ -12,6 +12,7 @@ public class TestFrame extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(false);
         BoardPanel boardPanel = new BoardPanel(board);
+        this.addKeyListener(boardPanel);
         this.add(boardPanel);
         this.pack();
         this.setVisible(true);

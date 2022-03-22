@@ -5,12 +5,19 @@ import chess.piece.Piece;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-public class BoardPanel extends JPanel implements MouseListener {
+public class BoardPanel extends JPanel implements MouseListener, KeyListener {
 
     public static BoardPanel INSTANCE;
+
+    // DEBUG OPTIONS
+    private boolean showThreats = false;
+    private boolean showPins = false;
+    private boolean showChecks = false;
 
     private Image fond;
     private Board board;
@@ -40,6 +47,29 @@ public class BoardPanel extends JPanel implements MouseListener {
         g.setColor(Color.GREEN);
         for (Move move : this.board.getSelectedPieceMoves()) {
             g.fillOval(move.getEndPosition().getX() * 64 + 20, (7 - move.getEndPosition().getY()) * 64 + 20, 24, 24);
+        }
+
+        if (this.showThreats) {
+            g.setColor(new Color(220, 55, 55, 100));
+            for (Position position : this.board.getThreatenedPositions()) {
+                g.fillRect(position.getX()*64, (7-position.getY())*64, 64, 64);
+            }
+        }
+
+        if (this.showPins) {
+            g.setColor(new Color(55, 113, 220, 100));
+            this.board.getPins()
+                    .stream()
+                    .flatMap(piecePin -> piecePin.getPossiblePositions().stream())
+                    .forEach(position -> g.fillRect(position.getX()*64, (7-position.getY())*64, 64, 64));
+        }
+
+        if (this.showChecks) {
+            g.setColor(new Color(250, 99, 180, 148));
+            this.board.getCheckSources()
+                    .stream()
+                    .flatMap(source -> source.getResolvingPositions().stream())
+                    .forEach(position -> g.fillRect(position.getX()*64, (7-position.getY())*64, 64, 64));
         }
     }
 
@@ -75,6 +105,27 @@ public class BoardPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        System.out.println(e.getKeyChar());
+        switch (e.getKeyChar()) {
+            case 'p' -> this.showPins = !this.showPins;
+            case 'm', 't' -> this.showThreats = !this.showThreats;
+            case 'c' -> this.showChecks = !this.showChecks;
+        }
+        this.repaint();
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 }

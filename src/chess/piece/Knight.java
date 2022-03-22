@@ -1,13 +1,17 @@
 package chess.piece;
 
 import chess.Board;
+import chess.move.CheckSource;
 import chess.move.Move;
 import chess.Position;
+import chess.move.PiecePin;
 import chess.player.Team;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Knight extends Piece {
@@ -39,12 +43,11 @@ public class Knight extends Piece {
 
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();
+        PiecePin pin = board.getPiecePin(this);
         
-        
-        for (Position direction : DIRECTIONS) {
-        
+        for (Position direction : Knight.DIRECTIONS) {
            Position test = direction.add(this.position);
-            if (test.isInBoard() && (board.getPiece(test) == null || (board.getPiece(test) != null && board.getPiece(test).getTeam() != this.team))) {
+            if (test.isInBoard() && (pin == null || pin.isPossible(test)) && (board.getPiece(test) == null || board.getPiece(test).getTeam() != this.team)) {
                 moves.add(new Move(this.position, test, this, board.getPiece(test))); //renvoie null si pas de pion
             }
 
@@ -52,6 +55,25 @@ public class Knight extends Piece {
         return moves;
     }
 
+    @Override
+    public Set<Position> computeThreatenedPositions(Board board) {
+        Set<Position> threatenedPositions = new HashSet<>();
+
+        for (Position direction : Knight.DIRECTIONS) {
+
+            Position test = direction.add(this.position);
+            if (test.isInBoard()) {
+                threatenedPositions.add(test); //renvoie null si pas de pion
+                Piece threatenedPiece = board.getPiece(test);
+                if (threatenedPiece != null && threatenedPiece.getTeam() != this.getTeam() && threatenedPiece instanceof King) {
+                    board.addCheckSource(new CheckSource(this, new HashSet<>(List.of(this.position))));
+                }
+            }
+
+        }
+
+        return threatenedPositions;
+    }
 
     public Image getImage() {
         if (this.team == Team.WHITE) {

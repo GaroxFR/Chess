@@ -36,6 +36,7 @@ public abstract class Piece {
 
     public abstract Set<Move> computePossibleMoves(Board board);
 
+    public abstract Set<Position> computeThreatenedPositions(Board board);
     public void setPosition(Position position) {
         this.position = position;
     }

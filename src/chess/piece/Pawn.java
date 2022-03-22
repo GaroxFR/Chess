@@ -1,13 +1,16 @@
 package chess.piece;
 
 import chess.Board;
+import chess.move.CheckSource;
 import chess.move.Move;
 import chess.Position;
 import chess.move.EnPassantPossibleCapture;
+import chess.move.PiecePin;
 import chess.player.Team;
 
 import java.awt.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Pawn extends Piece {
@@ -37,14 +40,15 @@ public class Pawn extends Piece {
     @Override
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();
+        PiecePin pin = board.getPiecePin(this);
 
         Position nextPosition = this.position.add(0, this.moveDirection);
-        if (nextPosition.isInBoard() && board.getPiece(nextPosition) == null) {
+        if (nextPosition.isInBoard() && (pin == null || pin.isPossible(nextPosition)) && board.getPiece(nextPosition) == null) {
             moves.add(new Move(this.position, nextPosition, this));
         }
 
         nextPosition = this.position.add(0, 2 * this.moveDirection);
-        if (this.position.getY() == this.doubleMoveRaw && nextPosition.isInBoard() && board.getPiece(this.position.add(0, this.moveDirection)) == null &&  board.getPiece(nextPosition) == null) {
+        if (this.position.getY() == this.doubleMoveRaw && nextPosition.isInBoard() && (pin == null || pin.isPossible(nextPosition)) && board.getPiece(this.position.add(0, this.moveDirection)) == null &&  board.getPiece(nextPosition) == null) {
             EnPassantPossibleCapture enPassantPossibleCapture = new EnPassantPossibleCapture(this.position.add(0, this.moveDirection), this);
             Move move = new Move(this.position, nextPosition, this);
             move.setEnPassantPossibleCapture(enPassantPossibleCapture);
@@ -53,7 +57,7 @@ public class Pawn extends Piece {
 
         for (int i = -1; i <= 1; i+=2) {
             nextPosition = this.position.add(i, this.moveDirection);
-            if (!nextPosition.isInBoard()) {
+            if (!nextPosition.isInBoard() || (pin != null && !pin.isPossible(nextPosition))) {
                 continue;
             }
 
@@ -65,6 +69,24 @@ public class Pawn extends Piece {
         }
 
         return moves;
+    }
+
+    @Override
+    public Set<Position> computeThreatenedPositions(Board board) {
+        Set<Position> threatenedPositions = new HashSet<>();
+        for (int i = -1; i <= 1; i+=2) {
+            Position nextPosition = this.position.add(i, this.moveDirection);
+            if (nextPosition.isInBoard()) {
+                threatenedPositions.add(nextPosition);
+
+                Piece threatenedPiece = board.getPiece(nextPosition);
+                if (threatenedPiece != null && threatenedPiece.getTeam() != this.getTeam() && threatenedPiece instanceof King) {
+                    board.addCheckSource(new CheckSource(this, new HashSet<>(List.of(this.position))));
+                }
+            }
+        }
+
+        return threatenedPositions;
     }
 
     public Image getImage() {

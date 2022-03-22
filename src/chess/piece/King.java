@@ -54,11 +54,25 @@ public class King extends Piece{
 
         for (Position direction : King.DIRECTIONS) {
             Position nextPosition = this.position.add(direction);
-            if (nextPosition.isInBoard() && (board.getPiece(nextPosition) == null || (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeam() != this.team))) {
+            if (nextPosition.isInBoard() && !board.isThreatened(nextPosition) && (board.getPiece(nextPosition) == null || board.getPiece(nextPosition).getTeam() != this.team)) {
                 moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
             }
         }
         return moves;
+    }
+
+    @Override
+    public Set<Position> computeThreatenedPositions(Board board) {
+        Set<Position> threatenedPositions = new HashSet<>();
+
+        for (Position direction : King.DIRECTIONS) {
+            Position nextPosition = this.position.add(direction);
+            if (nextPosition.isInBoard()) {
+                threatenedPositions.add(nextPosition);
+            }
+        }
+
+        return threatenedPositions;
     }
 
     public Image getImage() {

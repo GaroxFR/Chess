@@ -1,18 +1,24 @@
 package chess;
 
+import chess.move.CheckSource;
 import chess.move.EnPassantPossibleCapture;
 import chess.move.Move;
+import chess.move.PiecePin;
 import chess.piece.*;
 import chess.player.Player;
 import chess.player.Team;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Board {
 
     private Piece[][] pieces = new Piece[8][8];
     private Player[] players = new Player[2];
-    private final Set<Move> possibleMoves = new HashSet<>();
+    private Set<Move> possibleMoves = new HashSet<>();
+    private final Set<Position> threatenedPositions = new HashSet<>();
+    private final List<PiecePin> pins = new LinkedList<>();
+    private final List<CheckSource> checkSources = new LinkedList<>();
     private Team toPlay = Team.WHITE;
 
     private Piece selectedPiece = null;
@@ -93,6 +99,22 @@ public class Board {
 
     private void computePossibleMove() {
         this.possibleMoves.clear();
+        this.threatenedPositions.clear();
+        this.pins.clear();
+        this.checkSources.clear();
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Piece piece = this.getPiece(i, j);
+                if (piece != null && piece.isAlive() && piece.getTeam() != this.toPlay) {
+                    this.threatenedPositions.addAll(piece.computeThreatenedPositions(this));
+                    if (piece instanceof SlidingPiece) {
+                        ((SlidingPiece) piece).computePiecePin(this).ifPresent(this.pins::add);
+                    }
+                }
+            }
+        }
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece piece = this.getPiece(i, j);
@@ -100,6 +122,18 @@ public class Board {
                     this.possibleMoves.addAll(piece.computePossibleMoves(this));
                 }
             }
+        }
+
+        if (!this.checkSources.isEmpty()) {
+            Set<Position> resolvingPositions = new HashSet<>(this.checkSources.get(0).getResolvingPositions());
+            for (CheckSource checkSource : this.checkSources) {
+                resolvingPositions.retainAll(checkSource.getResolvingPositions());
+            }
+
+            this.possibleMoves = this.possibleMoves
+                    .stream()
+                    .filter(move -> move.getPiece() instanceof King || resolvingPositions.contains(move.getEndPosition()))
+                    .collect(Collectors.toSet());
         }
     }
 
@@ -193,5 +227,35 @@ public class Board {
 
     public EnPassantPossibleCapture getEnPassantPossibleCapture() {
         return this.enPassantPossibleCapture;
+    }
+
+    public boolean isThreatened(Position position) {
+        return this.threatenedPositions.contains(position);
+    }
+
+    public Set<Position> getThreatenedPositions() {
+        return this.threatenedPositions;
+    }
+
+    public List<PiecePin> getPins() {
+        return this.pins;
+    }
+
+    public PiecePin getPiecePin(Piece piece) {
+        for (PiecePin pin : this.pins) {
+            if (pin.getPiece().equals(piece)) {
+                return pin;
+            }
+        }
+
+        return null;
+    }
+
+    public List<CheckSource> getCheckSources() {
+        return this.checkSources;
+    }
+
+    public void addCheckSource(CheckSource source) {
+        this.checkSources.add(source);
     }
 }

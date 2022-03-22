@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 public class MainFrame extends JFrame /*implements ActionListener*/{
 
     final int width = 786;
-    final int height = 806;
+    final int height = 786;
     private JPanel mainBloc;
     private BoardPanel game;
     private JPanel topBloc;
@@ -47,14 +47,14 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
         rightBloc.setBounds(658, 216, 128, 490);
 
         player1 = new JLabel("Player1" /*get name de la premiere fenetre*/);
-        player1.setBounds(235, 96, 60,40);
+        player1.setBounds(235, 96, 60,20);
         player2 = new JLabel("Player2"/*get name de la premiere fenetre*/);
-        player2.setBounds(235, 706, 60,40);
+        player2.setBounds(235, 706, 60,20);
 
         timeDisplay1 = new JLabel("Temps : "/*a completer*/);
-        timeDisplay1.setBounds(235, 136, 60,20);
+        timeDisplay1.setBounds(235, 116, 60,20);
         timeDisplay2 = new JLabel("Temps : "/*a completer*/);
-        timeDisplay2.setBounds(235, 746, 60,20);
+        timeDisplay2.setBounds(235, 726, 60,20);
 
         mainBloc = new JPanel();
         mainBloc.setLayout(null);

@@ -129,7 +129,6 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
 
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.println(e.getKeyChar());
         switch (e.getKeyChar()) {
             case 'p' -> this.showPins = !this.showPins;
             case 'm', 't' -> this.showThreats = !this.showThreats;

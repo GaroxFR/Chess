@@ -8,8 +8,8 @@ import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame /*implements ActionListener*/{
 
-    final int width = 900;
-    final int height = 900;
+    final int width = 786;
+    final int height = 806;
     private JPanel mainBloc;
     private BoardPanel game;
     private JPanel topBloc;
@@ -30,37 +30,38 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
         //init min et sec (selon init de la fenetre de depart)
 
         game = new BoardPanel(plateau);
-        game.setBounds(100,144,530,530);
+        this.addKeyListener(game);
+        game.setBounds(128,176,530,530);
 
         topBloc = new JPanel();
         topBloc.setLayout(null);
-        topBloc.setBounds(0, 0, 700, 100);
+        topBloc.setBounds(0, 0,this.width,96);
         //image de fond ?
 
         leftBloc = new JPanel();
         leftBloc.setLayout(null);
-        leftBloc.setBounds(0, 144, 94, 512);
+        leftBloc.setBounds(0, 216, 128, 490);
 
         rightBloc = new JPanel();
         rightBloc.setLayout(null);
-        rightBloc.setBounds(606, 144, 94, 512);
+        rightBloc.setBounds(658, 216, 128, 490);
 
         player1 = new JLabel("Player1" /*get name de la premiere fenetre*/);
-        player1.setBounds(320, 110, 60,40);
+        player1.setBounds(235, 96, 60,40);
         player2 = new JLabel("Player2"/*get name de la premiere fenetre*/);
-        player2.setBounds(320, 600, 60,40);
+        player2.setBounds(235, 706, 60,40);
 
         timeDisplay1 = new JLabel("Temps : "/*a completer*/);
-        timeDisplay1.setBounds(320, 135, 60,40);
+        timeDisplay1.setBounds(235, 136, 60,20);
         timeDisplay2 = new JLabel("Temps : "/*a completer*/);
-        timeDisplay2.setBounds(320, 625, 60,40);
+        timeDisplay2.setBounds(235, 746, 60,20);
 
         mainBloc = new JPanel();
         mainBloc.setLayout(null);
         mainBloc.setBounds(0,0,this.width, this.height);
         mainBloc.setBackground(Color.CYAN);
 
-        this.add(game);
+        mainBloc.add(game);
         mainBloc.add(topBloc);
         mainBloc.add(leftBloc);
         mainBloc.add(rightBloc);

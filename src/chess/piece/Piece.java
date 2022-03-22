@@ -1,7 +1,7 @@
 package chess.piece;
 
 import chess.Board;
-import chess.Move;
+import chess.move.Move;
 import chess.Position;
 import chess.player.Team;
 

@@ -1,13 +1,9 @@
 package chess.piece;
 
-import chess.Board;
-import chess.Move;
 import chess.Position;
 import chess.player.Team;
 
 import java.awt.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Rook extends SlidingPiece {
 

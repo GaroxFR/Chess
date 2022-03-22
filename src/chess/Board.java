@@ -1,5 +1,7 @@
 package chess;
 
+import chess.move.EnPassantPossibleCapture;
+import chess.move.Move;
 import chess.piece.*;
 import chess.player.Player;
 import chess.player.Team;
@@ -14,6 +16,8 @@ public class Board {
     private Team toPlay = Team.WHITE;
 
     private Piece selectedPiece = null;
+    private EnPassantPossibleCapture enPassantPossibleCapture = null;
+    private EnPassantPossibleCapture previousEnPassantPossibleCapture = null;
 
     public Board() {
     }
@@ -30,6 +34,13 @@ public class Board {
             this.setPiece(move.getCapturedPiece().getPosition(), null);
         }
 
+        this.previousEnPassantPossibleCapture = this.enPassantPossibleCapture;
+        if (move.doGenerateEnPassant()) {
+            this.enPassantPossibleCapture = move.getEnPassantPossibleCapture();
+        } else {
+            this.enPassantPossibleCapture = null;
+        }
+
         this.setPiece(move.getStartPosition(), null);
         this.setPiece(move.getEndPosition(), move.getPiece());
         this.switchTurn();
@@ -38,6 +49,8 @@ public class Board {
     public void unmakeMove(Move move) {
         this.setPiece(move.getStartPosition(), move.getPiece());
         this.setPiece(move.getEndPosition(), null);
+
+        this.enPassantPossibleCapture = this.previousEnPassantPossibleCapture;
 
         if (move.isCapture()) {
             this.setPiece(move.getCapturedPiece().getPosition(), move.getCapturedPiece());
@@ -176,5 +189,9 @@ public class Board {
             return Optional.empty();
         }
         return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece && move.getEndPosition().equals(endPosition)).findFirst();
+    }
+
+    public EnPassantPossibleCapture getEnPassantPossibleCapture() {
+        return this.enPassantPossibleCapture;
     }
 }

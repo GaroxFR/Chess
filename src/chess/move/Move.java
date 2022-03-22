@@ -1,5 +1,6 @@
-package chess;
+package chess.move;
 
+import chess.Position;
 import chess.piece.Piece;
 
 import java.util.Objects;
@@ -10,6 +11,8 @@ public class Move {
     private final Position endPosition;
     private final Piece piece;
     private final Piece capturedPiece;
+
+    private EnPassantPossibleCapture enPassantPossibleCapture = null;
 
     public Move(Position startPosition, Position endPosition, Piece piece) {
         this(startPosition, endPosition, piece, null);
@@ -40,6 +43,18 @@ public class Move {
 
     public Piece getCapturedPiece() {
         return this.capturedPiece;
+    }
+
+    public boolean doGenerateEnPassant() {
+        return this.enPassantPossibleCapture != null;
+    }
+
+    public EnPassantPossibleCapture getEnPassantPossibleCapture() {
+        return this.enPassantPossibleCapture;
+    }
+
+    public void setEnPassantPossibleCapture(EnPassantPossibleCapture enPassantPossibleCapture) {
+        this.enPassantPossibleCapture = enPassantPossibleCapture;
     }
 
     @Override

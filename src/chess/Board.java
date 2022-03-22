@@ -197,11 +197,17 @@ public class Board {
         this.setPiece(position.getX(), position.getY(), piece);
     }
 
-    public void onClick(int x, int y) {
+    public void onPressed(int x, int y) {
         Piece piece = this.getPiece(x, y);
         if (piece != null && piece.getTeam() == this.toPlay) {
             this.selectedPiece = piece;
         } else {
+            this.selectedPiece = null;
+        }
+    }
+
+    public void onRelease(int x, int y) {
+        if (this.selectedPiece != null) {
             Optional<Move> moveOptional = this.getSelectedPieceMove(new Position(x, y));
             if (moveOptional.isPresent()) {
                 this.makeMove(moveOptional.get());
@@ -209,6 +215,10 @@ public class Board {
             }
             this.selectedPiece = null;
         }
+    }
+
+    public Piece getSelectedPiece() {
+        return this.selectedPiece;
     }
 
     public List<Move> getSelectedPieceMoves() {

@@ -5,12 +5,9 @@ import chess.piece.Piece;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
-public class BoardPanel extends JPanel implements MouseListener, KeyListener {
+public class BoardPanel extends JPanel implements MouseListener, KeyListener, MouseMotionListener {
 
     public static BoardPanel INSTANCE;
 
@@ -28,6 +25,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
         this.fond = Toolkit.getDefaultToolkit().getImage("res/board.png");
         this.setPreferredSize(new Dimension(530, 530));
         this.addMouseListener(this);
+        this.addMouseMotionListener(this);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Piece piece = this.board.getPiece(x, 7-y);
-                if (piece != null) {
+                if (piece != null && (this.board.getSelectedPiece() == null || this.board.getSelectedPiece() != piece)) {
                    g.drawImage(piece.getImage(), x*64, y*64, null);
                 }
             }
@@ -47,6 +45,12 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
         g.setColor(Color.GREEN);
         for (Move move : this.board.getSelectedPieceMoves()) {
             g.fillOval(move.getEndPosition().getX() * 64 + 20, (7 - move.getEndPosition().getY()) * 64 + 20, 24, 24);
+        }
+
+        Piece piece = this.board.getSelectedPiece();
+        Point point = this.getMousePosition();
+        if (piece != null && point != null) {
+            g.drawImage(piece.getImage(), point.x - 32, point.y - 32, null);
         }
 
         if (this.showThreats) {
@@ -80,22 +84,27 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
         int x = e.getX() / 64;
         int y = 7 - (e.getY() / 64);
         if (x >= 0 && x <= 8 && y >= 0 && y <= 8) {
-            this.board.onClick(x, y);
+            this.board.onPressed(x, y);
             this.repaint();
         }
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
     public void mouseReleased(MouseEvent e) {
-
+        int x = e.getX() / 64;
+        int y = 7 - (e.getY() / 64);
+        if (x >= 0 && x <= 8 && y >= 0 && y <= 8) {
+            this.board.onRelease(x, y);
+            this.repaint();
+        }
     }
 
     @Override
@@ -105,6 +114,16 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        this.repaint();
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
 

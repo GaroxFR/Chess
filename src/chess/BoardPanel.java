@@ -56,7 +56,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
         if (this.showThreats) {
             g.setColor(new Color(220, 55, 55, 100));
             for (Position position : this.board.getThreatenedPositions()) {
-                g.fillRect(position.getX()*64+1, (7-position.getY())*64+1, 64, 64);
+                g.fillRect(position.getX()*64, (7-position.getY())*64+1, 64, 64);
             }
         }
 
@@ -65,7 +65,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             this.board.getPins()
                     .stream()
                     .flatMap(piecePin -> piecePin.getPossiblePositions().stream())
-                    .forEach(position -> g.fillRect(position.getX()*64+1, (7-position.getY())*64+1, 64, 64));
+                    .forEach(position -> g.fillRect(position.getX()*64, (7-position.getY())*64+1, 64, 64));
         }
 
         if (this.showChecks) {
@@ -73,7 +73,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             this.board.getCheckSources()
                     .stream()
                     .flatMap(source -> source.getResolvingPositions().stream())
-                    .forEach(position -> g.fillRect(position.getX()*64+1, (7-position.getY())*64+1, 64, 64));
+                    .forEach(position -> g.fillRect(position.getX()*64, (7-position.getY())*64+1, 64, 64));
         }
     }
 

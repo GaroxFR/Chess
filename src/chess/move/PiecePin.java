@@ -3,7 +3,6 @@ package chess.move;
 import chess.Position;
 import chess.piece.Piece;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class PiecePin {

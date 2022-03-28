@@ -23,7 +23,6 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
         BoardPanel.INSTANCE = this;
         this.board = plateau;
         this.fond = Toolkit.getDefaultToolkit().getImage("res/board.png");
-        this.setPreferredSize(new Dimension(530, 530));
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }

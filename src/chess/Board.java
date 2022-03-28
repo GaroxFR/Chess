@@ -25,6 +25,8 @@ public class Board {
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
     private EnPassantPossibleCapture previousEnPassantPossibleCapture = null;
 
+    private ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
+
     public Board() {
     }
 
@@ -38,6 +40,9 @@ public class Board {
         if (move.isCapture()) {
             move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
             this.setPiece(move.getCapturedPiece().getPosition(), null);
+            this.chessAudioPlayer.playCaptureSound();
+        } else {
+            this.chessAudioPlayer.playMoveSound();
         }
 
         this.previousEnPassantPossibleCapture = this.enPassantPossibleCapture;

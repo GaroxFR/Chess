@@ -12,6 +12,8 @@ public class Move {
     private final Piece piece;
     private final Piece capturedPiece;
 
+    private PreMoveState preMoveState = null;
+
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
     private CastleInfo castleInfo;
 
@@ -76,6 +78,14 @@ public class Move {
         }
         Move move = (Move) o;
         return this.startPosition.equals(move.startPosition) && this.endPosition.equals(move.endPosition);
+    }
+
+    public PreMoveState getPreMoveState() {
+        return this.preMoveState;
+    }
+
+    public void setPreMoveState(PreMoveState preMoveState) {
+        this.preMoveState = preMoveState;
     }
 
     @Override

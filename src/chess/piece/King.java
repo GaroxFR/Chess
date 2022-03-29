@@ -12,14 +12,14 @@ import java.util.Set;
 
 public class King extends Piece{
 
-    private boolean kingMoved; //pour le roque, si pièce déjà jouée
-    private boolean roque; //si le roque a été joué
+    private final boolean kingMoved; //pour le roque, si pièce déjà jouée
+    private final boolean roque; //si le roque a été joué
 
     private static Image ImgPieceWhite;
     private static Image ImgPieceBlack;
     private static final int[] CORNERS_X = {0, 7};
 
-    private int firstRaw;
+    private final int firstRaw;
 
     static {
         King.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/roi_b.png");
@@ -42,9 +42,9 @@ public class King extends Piece{
         this.kingMoved = false;
         this.roque = false;
         if(team == Team.WHITE){
-            firstRaw=0;
+            this.firstRaw = 0;
         }else{
-            firstRaw=7;
+            this.firstRaw = 7;
         }
     }
 
@@ -72,22 +72,22 @@ public class King extends Piece{
         Position rightRookCurrentPosition = this.getPosition(); //position de la tour ?
 
 
-        if(!kingMoved) {
-            for (int i : CORNERS_X) {
-                Piece piece = board.getPiece(i, firstRaw);
+        if(!this.kingMoved) {
+            for (int i : King.CORNERS_X) {
+                Piece piece = board.getPiece(i, this.firstRaw);
                 if(piece instanceof Rook && !((Rook) piece).getRookMoved()) {
 
                     int dir = (int) Math.signum(piece.getPosition().getX() - this.position.getX());
                     boolean valid = true;
-                    for (int x = this.position.getX(); x <= piece.getPosition().getX(); x += dir) {
-                        if ((x != piece.getPosition().getX() && x != this.position.getX() && board.getPiece(x, firstRaw) != null) || board.isThreatened(new Position(x, firstRaw))) {
+                    for (int x = this.position.getX(); (piece.getPosition().getX() - x) * dir >= 0; x += dir) {
+                        if ((x != piece.getPosition().getX() && x != this.position.getX() && board.getPiece(x, this.firstRaw) != null) || board.isThreatened(new Position(x, this.firstRaw))) {
                             valid = false;
                             break;
                         }
                     }
                     if (valid) {
                         Move move = new Move(this.position, this.position.add(2 * dir, 0), this);
-                        move.setCastleInfo(new CastleInfo(piece, piece.getPosition(), this.position.add(dir, firstRaw)));
+                        move.setCastleInfo(new CastleInfo(piece, piece.getPosition(), this.position.add(dir, this.firstRaw)));
                         moves.add(move);
                     }
                 }
@@ -113,9 +113,9 @@ public class King extends Piece{
 
     public Image getImage() {
         if (this.team == Team.WHITE) {
-            return ImgPieceWhite;
+            return King.ImgPieceWhite;
         } else {
-            return ImgPieceBlack;
+            return King.ImgPieceBlack;
         }
     }
 }

@@ -1,9 +1,6 @@
 package chess;
 
-import chess.move.CheckSource;
-import chess.move.EnPassantPossibleCapture;
-import chess.move.Move;
-import chess.move.PiecePin;
+import chess.move.*;
 import chess.piece.*;
 import chess.player.Player;
 import chess.player.Team;
@@ -23,7 +20,6 @@ public class Board {
 
     private Piece selectedPiece = null;
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
-    private EnPassantPossibleCapture previousEnPassantPossibleCapture = null;
 
     private ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
 
@@ -37,6 +33,8 @@ public class Board {
     }
 
     public void makeMove(Move move) {
+        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, true)); //TODO hadPieceMove
+
         if (move.isCapture()) {
             move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
             this.setPiece(move.getCapturedPiece().getPosition(), null);
@@ -45,7 +43,6 @@ public class Board {
             this.chessAudioPlayer.playMoveSound();
         }
 
-        this.previousEnPassantPossibleCapture = this.enPassantPossibleCapture;
         if (move.doGenerateEnPassant()) {
             this.enPassantPossibleCapture = move.getEnPassantPossibleCapture();
         } else {
@@ -66,12 +63,14 @@ public class Board {
         this.setPiece(move.getStartPosition(), move.getPiece());
         this.setPiece(move.getEndPosition(), null);
 
-        this.enPassantPossibleCapture = this.previousEnPassantPossibleCapture;
+        this.enPassantPossibleCapture = move.getPreMoveState().getEnPassantPossibleCapture();
 
         if (move.isCapture()) {
             this.setPiece(move.getCapturedPiece().getPosition(), move.getCapturedPiece());
             move.getCapturedPiece().setAlive(true);
         }
+
+        //TODO unmake castle
 
         this.switchTurn();
     }
@@ -95,12 +94,6 @@ public class Board {
         for (Move possibleMove : copyMove) {
 
             this.makeMove(possibleMove);
-            /*BoardPanel.INSTANCE.repaint();
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
             sum += this.countPossibleMoves(depth - 1);
             this.unmakeMove(possibleMove);
         }

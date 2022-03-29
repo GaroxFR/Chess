@@ -21,6 +21,8 @@ public class Board {
     private Piece selectedPiece = null;
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
 
+    private LinkedList<Piece> capturedPiece = new LinkedList<>();
+
     private ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
 
     public Board() {
@@ -37,6 +39,7 @@ public class Board {
 
         if (move.isCapture()) {
             move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
+            capturedPiece.add(move.getCapturedPiece()); // ajouts dans la liste des pions morts
             this.setPiece(move.getCapturedPiece().getPosition(), null);
             this.chessAudioPlayer.playCaptureSound();
         } else {
@@ -274,5 +277,9 @@ public class Board {
 
     public ChessAudioPlayer getAudioPlayer() {
         return this.chessAudioPlayer;
+    }
+
+    public LinkedList<Piece> getCapturedPiece(){
+        return this.capturedPiece;
     }
 }

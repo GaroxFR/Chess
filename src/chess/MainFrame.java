@@ -1,5 +1,6 @@
 package chess;
 
+import chess.player.Team;
 import chess.test.TestFrame;
 
 import javax.swing.*;
@@ -48,13 +49,16 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
         backgroundLabel.setBounds(0,0,this.width,96);
         topBloc.add(backgroundLabel);
 
-        leftBloc = new JPanel();
+        leftBloc = new CapturedPiecePanel(Team.WHITE, plateau);
         leftBloc.setLayout(null);
         leftBloc.setBounds(0, 216, 128, 490);
 
-        rightBloc = new JPanel();
+        rightBloc = new CapturedPiecePanel(Team.BLACK, plateau);
         rightBloc.setLayout(null);
         rightBloc.setBounds(658, 216, 128, 490);
+
+        Timer repaintTimer = new Timer(250, e -> this.repaint());
+        repaintTimer.start();
 
         player1 = new JLabel("Player1" /*get name de la premiere fenetre*/);
         player1.setBounds(235, 96, 60,20);

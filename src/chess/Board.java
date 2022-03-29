@@ -273,4 +273,8 @@ public class Board {
     public void addCheckSource(CheckSource source) {
         this.checkSources.add(source);
     }
+
+    public ChessAudioPlayer getAudioPlayer() {
+        return this.chessAudioPlayer;
+    }
 }

@@ -41,9 +41,9 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             }
         }
 
-        g.setColor(Color.GREEN);
+        g.setColor(new Color(59, 92, 22));
         for (Move move : this.board.getSelectedPieceMoves()) {
-            g.fillOval(move.getEndPosition().getX() * 64 + 20, (7 - move.getEndPosition().getY()) * 64 + 20, 24, 24);
+            g.fillOval(move.getEndPosition().getX() * 64 + 23, (7 - move.getEndPosition().getY()) * 64 + 23, 18, 18);
         }
 
         Piece piece = this.board.getSelectedPiece();

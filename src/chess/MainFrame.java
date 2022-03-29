@@ -22,6 +22,13 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
     private Timer timer1; private int min1; private int sec1;
     private Timer timer2; private int min2; private int sec2;
 
+    private ImageIcon background;
+    private JLabel backgroundLabel;
+
+    private ImageIcon sides;
+    private JLabel leftLabel;
+    private JLabel rightLabel;
+
     public MainFrame (Board plateau) {
         setLocation(290, 10);
         setSize(width, height);
@@ -36,7 +43,10 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
         topBloc = new JPanel();
         topBloc.setLayout(null);
         topBloc.setBounds(0, 0,this.width,96);
-        //image de fond ?
+        this.background = new ImageIcon("res/images/background2.png");
+        backgroundLabel = new JLabel(this.background,JLabel.CENTER);
+        backgroundLabel.setBounds(0,0,this.width,96);
+        topBloc.add(backgroundLabel);
 
         leftBloc = new JPanel();
         leftBloc.setLayout(null);

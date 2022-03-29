@@ -1,6 +1,7 @@
 package chess.piece;
 
 import chess.Board;
+import chess.move.CastleInfo;
 import chess.move.Move;
 import chess.Position;
 import chess.player.Team;
@@ -11,11 +12,14 @@ import java.util.Set;
 
 public class King extends Piece{
 
-    private int move;
-    private boolean played; //pour le roque, si pièce déjà jouée
+    private boolean kingMoved; //pour le roque, si pièce déjà jouée
     private boolean roque; //si le roque a été joué
+
     private static Image ImgPieceWhite;
     private static Image ImgPieceBlack;
+    private static final int[] CORNERS_X = {0, 7};
+
+    private int firstRaw;
 
     static {
         King.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/roi_b.png");
@@ -35,9 +39,13 @@ public class King extends Piece{
 
     public King(Team team, Position position) {
         super(team, position);
-        this.move = 1;
-        this.played = false;
+        this.kingMoved = false;
         this.roque = false;
+        if(team == Team.WHITE){
+            firstRaw=0;
+        }else{
+            firstRaw=7;
+        }
     }
 
     @Override
@@ -58,8 +66,36 @@ public class King extends Piece{
                 moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
             }
         }
+        //roque
+        Position kingCurrentPosition = this.getPosition();
+        Position leftRookCurrentPosition = this.getPosition(); //position de la tour ?
+        Position rightRookCurrentPosition = this.getPosition(); //position de la tour ?
+
+
+        if(!kingMoved) {
+            for (int i : CORNERS_X) {
+                Piece piece = board.getPiece(i, firstRaw);
+                if(piece instanceof Rook && !((Rook) piece).getRookMoved()) {
+
+                    int dir = (int) Math.signum(piece.getPosition().getX() - this.position.getX());
+                    boolean valid = true;
+                    for (int x = this.position.getX(); x <= piece.getPosition().getX(); x += dir) {
+                        if ((x != piece.getPosition().getX() && x != this.position.getX() && board.getPiece(x, firstRaw) != null) || board.isThreatened(new Position(x, firstRaw))) {
+                            valid = false;
+                            break;
+                        }
+                    }
+                    if (valid) {
+                        Move move = new Move(this.position, this.position.add(2 * dir, 0), this);
+                        move.setCastleInfo(new CastleInfo(piece, piece.getPosition(), this.position.add(dir, firstRaw)));
+                        moves.add(move);
+                    }
+                }
+            }
+        }
         return moves;
     }
+
 
     @Override
     public Set<Position> computeThreatenedPositions(Board board) {

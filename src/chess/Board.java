@@ -52,6 +52,11 @@ public class Board {
             this.enPassantPossibleCapture = null;
         }
 
+        if (move.getCastleInfo() != null) {
+            this.setPiece(move.getCastleInfo().getNewRookPosition(), move.getCastleInfo().getRook());
+            this.setPiece(move.getCastleInfo().getOldRookPosition(), null);
+        }
+
         this.setPiece(move.getStartPosition(), null);
         this.setPiece(move.getEndPosition(), move.getPiece());
         this.switchTurn();

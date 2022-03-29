@@ -13,6 +13,7 @@ public class Move {
     private final Piece capturedPiece;
 
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
+    private CastleInfo castleInfo;
 
     public Move(Position startPosition, Position endPosition, Piece piece) {
         this(startPosition, endPosition, piece, null);
@@ -55,6 +56,14 @@ public class Move {
 
     public void setEnPassantPossibleCapture(EnPassantPossibleCapture enPassantPossibleCapture) {
         this.enPassantPossibleCapture = enPassantPossibleCapture;
+    }
+
+    public CastleInfo getCastleInfo() {
+        return this.castleInfo;
+    }
+
+    public void setCastleInfo(CastleInfo castleInfo) {
+        this.castleInfo = castleInfo;
     }
 
     @Override

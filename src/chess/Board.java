@@ -21,9 +21,11 @@ public class Board {
     private Piece selectedPiece = null;
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
 
-    private LinkedList<Piece> capturedPiece = new LinkedList<>();
+    private final LinkedList<Piece> capturedPiece = new LinkedList<>();
+    private final LinkedList<Move> moveHistory = new LinkedList<>();
+    private int moveIndex = 0;
 
-    private ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
+    private final ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
 
     public Board() {
     }
@@ -34,12 +36,13 @@ public class Board {
         this.toPlay = toPlay;
     }
 
-    public void makeMove(Move move) {
-        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, true)); //TODO hadPieceMove
+    public void makeMove(Move move, boolean addToHistory) {
+        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved()));
+        move.getPiece().setMoved(true);
 
         if (move.isCapture()) {
             move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
-            capturedPiece.add(move.getCapturedPiece()); // ajouts dans la liste des pions morts
+            this.capturedPiece.add(move.getCapturedPiece()); // ajouts dans la liste des pions morts
             this.setPiece(move.getCapturedPiece().getPosition(), null);
             this.chessAudioPlayer.playCaptureSound();
         } else {
@@ -60,6 +63,10 @@ public class Board {
         this.setPiece(move.getStartPosition(), null);
         this.setPiece(move.getEndPosition(), move.getPiece());
         this.switchTurn();
+
+        if (addToHistory) {
+            this.moveHistory.add(0, move);
+        }
     }
 
     public void unmakeMove(Move move) {
@@ -67,13 +74,17 @@ public class Board {
         this.setPiece(move.getEndPosition(), null);
 
         this.enPassantPossibleCapture = move.getPreMoveState().getEnPassantPossibleCapture();
+        move.getPiece().setMoved(move.getPreMoveState().hadPieceMove());
 
         if (move.isCapture()) {
             this.setPiece(move.getCapturedPiece().getPosition(), move.getCapturedPiece());
             move.getCapturedPiece().setAlive(true);
         }
 
-        //TODO unmake castle
+        if (move.getCastleInfo() != null) {
+            this.setPiece(move.getCastleInfo().getOldRookPosition(), move.getCastleInfo().getRook());
+            this.setPiece(move.getCastleInfo().getNewRookPosition(), null);
+        }
 
         this.switchTurn();
     }
@@ -96,7 +107,7 @@ public class Board {
         Set<Move> copyMove =  new HashSet<>(this.possibleMoves);
         for (Move possibleMove : copyMove) {
 
-            this.makeMove(possibleMove);
+            this.makeMove(possibleMove, false);
             sum += this.countPossibleMoves(depth - 1);
             this.unmakeMove(possibleMove);
         }
@@ -204,6 +215,10 @@ public class Board {
     }
 
     public void onPressed(int x, int y) {
+        if (this.moveIndex != 0) {
+            return;
+        }
+
         Piece piece = this.getPiece(x, y);
         if (piece != null && piece.getTeam() == this.toPlay) {
             this.selectedPiece = piece;
@@ -216,7 +231,7 @@ public class Board {
         if (this.selectedPiece != null) {
             Optional<Move> moveOptional = this.getSelectedPieceMove(new Position(x, y));
             if (moveOptional.isPresent()) {
-                this.makeMove(moveOptional.get());
+                this.makeMove(moveOptional.get(), true);
                 this.computePossibleMove();
             }
             this.selectedPiece = null;
@@ -281,5 +296,19 @@ public class Board {
 
     public LinkedList<Piece> getCapturedPiece(){
         return this.capturedPiece;
+    }
+
+    public void goBackHistory() {
+        if (this.moveIndex < this.moveHistory.size()) {
+            this.unmakeMove(this.moveHistory.get(this.moveIndex));
+            this.moveIndex++;
+        }
+    }
+
+    public void goForwardHistory() {
+        if (this.moveIndex > 0) {
+            this.moveIndex--;
+            this.makeMove(this.moveHistory.get(this.moveIndex), false);
+        }
     }
 }

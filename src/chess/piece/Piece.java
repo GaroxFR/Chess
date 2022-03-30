@@ -12,6 +12,7 @@ public abstract class Piece {
     protected Team team;
     protected Position position;
     protected boolean alive = true;
+    protected boolean moved = false;
 
     public Piece(Team team, Position position) {
         this.team = team;
@@ -42,4 +43,12 @@ public abstract class Piece {
     }
 
     public abstract Image getImage();
+
+    public boolean hasMoved() {
+        return this.moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
+    }
 }

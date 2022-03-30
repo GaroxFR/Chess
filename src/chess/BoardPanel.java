@@ -118,7 +118,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        this.repaint();
+        //this.repaint();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             case 'm', 't' -> this.showThreats = !this.showThreats;
             case 'c' -> this.showChecks = !this.showChecks;
         }
-        this.repaint();
+
     }
 
     @Override
@@ -143,6 +143,9 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
 
     @Override
     public void keyReleased(KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_LEFT -> board.goBackHistory();
+            case KeyEvent.VK_RIGHT -> board.goForwardHistory();
+        }
     }
 }

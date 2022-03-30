@@ -12,9 +12,6 @@ import java.util.Set;
 
 public class King extends Piece{
 
-    private final boolean kingMoved; //pour le roque, si pièce déjà jouée
-    private final boolean roque; //si le roque a été joué
-
     private static Image ImgPieceWhite;
     private static Image ImgPieceBlack;
     private static final int[] CORNERS_X = {0, 7};
@@ -39,8 +36,6 @@ public class King extends Piece{
 
     public King(Team team, Position position) {
         super(team, position);
-        this.kingMoved = false;
-        this.roque = false;
         if(team == Team.WHITE){
             this.firstRaw = 0;
         }else{
@@ -66,16 +61,11 @@ public class King extends Piece{
                 moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
             }
         }
-        //roque
-        Position kingCurrentPosition = this.getPosition();
-        Position leftRookCurrentPosition = this.getPosition(); //position de la tour ?
-        Position rightRookCurrentPosition = this.getPosition(); //position de la tour ?
 
-
-        if(!this.kingMoved) {
+        if(!this.hasMoved()) {
             for (int i : King.CORNERS_X) {
                 Piece piece = board.getPiece(i, this.firstRaw);
-                if(piece instanceof Rook && !((Rook) piece).getRookMoved()) {
+                if(piece instanceof Rook && !((Rook) piece).hasMoved()) {
 
                     int dir = (int) Math.signum(piece.getPosition().getX() - this.position.getX());
                     boolean valid = true;
@@ -118,4 +108,5 @@ public class King extends Piece{
             return King.ImgPieceBlack;
         }
     }
+
 }

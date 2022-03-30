@@ -9,7 +9,6 @@ public class Rook extends SlidingPiece {
 
     private static Image ImgPieceWhite;
     private static Image ImgPieceBlack;
-    private boolean rookMoved;
 
     static {
         Rook.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/tour_b.png");
@@ -26,11 +25,6 @@ public class Rook extends SlidingPiece {
 
     public Rook(Team team, Position position) {
         super(team, position);
-        this.rookMoved = false;
-    }
-
-    public boolean getRookMoved() {
-        return this.rookMoved;
     }
 
     @Override

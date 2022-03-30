@@ -13,7 +13,7 @@ public class PreMoveState {
         return this.enPassantPossibleCapture;
     }
 
-    public boolean isHadPieceMove() {
+    public boolean hadPieceMove() {
         return this.hadPieceMove;
     }
 }

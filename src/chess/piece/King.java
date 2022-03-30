@@ -87,7 +87,7 @@ public class King extends Piece{
                     }
                     if (valid) {
                         Move move = new Move(this.position, this.position.add(2 * dir, 0), this);
-                        move.setCastleInfo(new CastleInfo(piece, piece.getPosition(), this.position.add(dir, this.firstRaw)));
+                        move.setCastleInfo(new CastleInfo(piece, piece.getPosition(), this.position.add(dir, 0)));
                         moves.add(move);
                     }
                 }

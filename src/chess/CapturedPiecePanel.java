@@ -19,7 +19,6 @@ public class CapturedPiecePanel extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("test");
         for (Piece captured : this.board.getCapturedPiece() ) {
             if (captured.getTeam() != this.team) {
                 continue;

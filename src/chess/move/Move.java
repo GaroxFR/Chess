@@ -16,6 +16,7 @@ public class Move {
 
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
     private CastleInfo castleInfo;
+    private Promotion promotion = null;
 
     public Move(Position startPosition, Position endPosition, Piece piece) {
         this(startPosition, endPosition, piece, null);
@@ -88,8 +89,16 @@ public class Move {
         this.preMoveState = preMoveState;
     }
 
+    public Promotion getPromotion() {
+        return this.promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(this.startPosition, this.endPosition);
+        return Objects.hash(this.startPosition, this.endPosition, this.promotion);
     }
 }

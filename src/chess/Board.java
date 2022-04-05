@@ -1,11 +1,14 @@
 package chess;
 
+import chess.ihm.panels.PromotionPanel;
 import chess.move.*;
 import chess.piece.*;
 import chess.player.Player;
 import chess.player.Team;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Board {
@@ -26,6 +29,7 @@ public class Board {
     private int moveIndex = 0;
 
     private final ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
+    private boolean waiting = false;
 
     public Board() {
     }
@@ -62,6 +66,11 @@ public class Board {
 
         this.setPiece(move.getStartPosition(), null);
         this.setPiece(move.getEndPosition(), move.getPiece());
+
+        if (move.getPromotion() != null) {
+            this.setPiece(move.getEndPosition(), move.getPromotion().getPiece());
+        }
+
         this.switchTurn();
 
         if (addToHistory) {
@@ -84,6 +93,10 @@ public class Board {
         if (move.getCastleInfo() != null) {
             this.setPiece(move.getCastleInfo().getOldRookPosition(), move.getCastleInfo().getRook());
             this.setPiece(move.getCastleInfo().getNewRookPosition(), null);
+        }
+
+        if (move.getPromotion() != null) {
+            this.setPiece(move.getStartPosition(), move.getPromotion().getPawn());
         }
 
         this.switchTurn();
@@ -204,17 +217,21 @@ public class Board {
     }
 
     public void setPiece(int x, int y, Piece piece) {
+        if (piece != null) {
+            piece.setPosition(new Position(x, y));
+        }
         this.pieces[x][y] = piece;
     }
 
     public void setPiece(Position position, Piece piece) {
-        if (piece != null) {
-            piece.setPosition(position);
-        }
         this.setPiece(position.getX(), position.getY(), piece);
     }
 
     public void onPressed(int x, int y) {
+        if (this.waiting) {
+            return;
+        }
+
         if (this.moveIndex != 0) {
             return;
         }
@@ -227,15 +244,25 @@ public class Board {
         }
     }
 
-    public void onRelease(int x, int y) {
+    public Optional<PromotionPanel> onRelease(int x, int y) {
         if (this.selectedPiece != null) {
-            Optional<Move> moveOptional = this.getSelectedPieceMove(new Position(x, y));
-            if (moveOptional.isPresent()) {
-                this.makeMove(moveOptional.get(), true);
+            List<Move> moves = this.getSelectedPieceMoves(new Position(x, y));
+
+            if (moves.size() == 1) {
+                this.makeMove(moves.get(0), true);
                 this.computePossibleMove();
             }
             this.selectedPiece = null;
+
+            if (moves.size() > 1) {
+                return Optional.of(new PromotionPanel(0, 0, moves, move -> {
+                    this.makeMove(move, true);
+                    this.computePossibleMove();
+                }));
+            }
         }
+
+        return Optional.empty();
     }
 
     public Piece getSelectedPiece() {
@@ -249,11 +276,19 @@ public class Board {
         return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece).toList();
     }
 
-    public Optional<Move> getSelectedPieceMove(Position endPosition) {
+    public List<Move> getSelectedPieceMoves(Position endPosition) {
         if (this.selectedPiece == null) {
+            return new ArrayList<>();
+        }
+        return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece && move.getEndPosition().equals(endPosition)).toList();
+    }
+
+    public Optional<Move> getSelectedPieceMove(Position endPosition) {
+        List<Move> selectedPieceMoves = this.getSelectedPieceMoves(endPosition);
+        if (selectedPieceMoves.isEmpty()) {
             return Optional.empty();
         }
-        return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece && move.getEndPosition().equals(endPosition)).findFirst();
+        return Optional.of(this.getSelectedPieceMoves().get(0));
     }
 
     public EnPassantPossibleCapture getEnPassantPossibleCapture() {
@@ -311,4 +346,5 @@ public class Board {
             this.makeMove(this.moveHistory.get(this.moveIndex), false);
         }
     }
+
 }

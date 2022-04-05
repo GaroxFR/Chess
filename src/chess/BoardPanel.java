@@ -1,11 +1,13 @@
 package chess;
 
+import chess.ihm.panels.PromotionPanel;
 import chess.move.Move;
 import chess.piece.Piece;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Optional;
 
 public class BoardPanel extends JPanel implements MouseListener, KeyListener, MouseMotionListener {
 
@@ -101,7 +103,8 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
         int x = e.getX() / 64;
         int y = 7 - (e.getY() / 64);
         if (x >= 0 && x <= 8 && y >= 0 && y <= 8) {
-            this.board.onRelease(x, y);
+            Optional<PromotionPanel> promotionPanelOptional = this.board.onRelease(x, y);
+            promotionPanelOptional.ifPresent(this::add);
             this.repaint();
         }
     }

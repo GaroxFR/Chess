@@ -81,6 +81,7 @@ public class Board {
         if (move.isCapture()) {
             this.setPiece(move.getCapturedPiece().getPosition(), move.getCapturedPiece());
             move.getCapturedPiece().setAlive(true);
+            this.capturedPiece.remove(move.getCapturedPiece());
         }
 
         if (move.getCastleInfo() != null) {

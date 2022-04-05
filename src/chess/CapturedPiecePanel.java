@@ -29,9 +29,8 @@ public class CapturedPiecePanel extends JPanel {
         int jRook = 152;
         int iQueen = 8;
         int jQueen = 200;
+
         for (Piece captured : this.board.getCapturedPiece() ) {
-
-
             if (captured.getTeam() != this.team) {
                 continue;
             }

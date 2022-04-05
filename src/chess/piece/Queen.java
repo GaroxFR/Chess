@@ -44,4 +44,9 @@ public class Queen extends SlidingPiece {
             return ImgPieceBlack;
         }
     }
+
+    @Override
+    public int getValue() {
+        return 9;
+    }
 }

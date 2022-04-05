@@ -52,4 +52,6 @@ public abstract class Piece {
     public void setMoved(boolean moved) {
         this.moved = moved;
     }
+
+    public abstract int getValue();
 }

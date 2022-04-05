@@ -199,6 +199,8 @@ public class Board {
             this.toPlay = Team.BLACK;
         }
 
+
+
         this.computePossibleMove();
     }
 

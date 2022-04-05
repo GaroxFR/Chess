@@ -39,5 +39,10 @@ public class Bishop extends SlidingPiece {
         }
     }
 
+    @Override
+    public int getValue() {
+        return 3;
+    }
+
 
 }

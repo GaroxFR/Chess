@@ -109,4 +109,9 @@ public class King extends Piece{
         }
     }
 
+    @Override
+    public int getValue() {
+        return 0;
+    }
+
 }

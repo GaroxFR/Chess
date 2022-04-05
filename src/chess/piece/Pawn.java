@@ -119,4 +119,9 @@ public class Pawn extends Piece {
             return ImgPieceBlack;
         }
     }
+
+    @Override
+    public int getValue() {
+        return 1;
+    }
 }

@@ -82,4 +82,9 @@ public class Knight extends Piece {
             return ImgPieceBlack;
         }
     }
+
+    @Override
+    public int getValue() {
+        return 3;
+    }
 }

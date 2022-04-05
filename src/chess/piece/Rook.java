@@ -40,4 +40,9 @@ public class Rook extends SlidingPiece {
             return ImgPieceBlack;
         }
     }
+
+    @Override
+    public int getValue() {
+        return 5;
+    }
 }

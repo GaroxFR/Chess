@@ -20,7 +20,7 @@ public class PromotionPanel extends JPanel implements MouseListener {
     private final Map<Class<?>, Move> promotionMoveMap = new HashMap<>();
     private final Consumer<Move> moveConsumer;
 
-    public PromotionPanel(int x, int y, List<Move> promotionMoves, Consumer<Move> moveConsumer) {
+    public PromotionPanel(List<Move> promotionMoves, Consumer<Move> moveConsumer) {
         for (Move promotionMove : promotionMoves) {
             if (promotionMove.getPromotion() == null) {
                 continue;
@@ -31,13 +31,24 @@ public class PromotionPanel extends JPanel implements MouseListener {
         this.moveConsumer = moveConsumer;
 
         this.addMouseListener(this);
+    }
+
+    public void setPosition(int x, int y) {
         this.setBounds(x, y, 64, 256);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        g.setColor(new Color(177, 136, 97));
+        g.setColor(new Color(77, 71, 61));
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        g.setColor(new Color(237, 217, 179));
+        g.fillRect(5, 5, this.getWidth()-10, this.getHeight()-10);
+
+        Point point = this.getMousePosition();
+        if (point != null) {
+            g.setColor(new Color(186, 170, 140));
+            g.fillRect(5, (int) (point.getY() / 64) * 64, 54, 64);
+        }
 
         g.drawImage(this.promotionMoveMap.get(Queen.class).getPromotion().getPiece().getImage(), 0, 0, 64, 64, null);
         g.drawImage(this.promotionMoveMap.get(Rook.class).getPromotion().getPiece().getImage(), 0, 64, 64, 64, null);

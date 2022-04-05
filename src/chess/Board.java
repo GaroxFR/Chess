@@ -6,7 +6,6 @@ import chess.piece.*;
 import chess.player.Player;
 import chess.player.Team;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,12 +31,6 @@ public class Board {
     private boolean waiting = false;
 
     public Board() {
-    }
-
-    private Board(Piece[][] pieces, Player[] players, Team toPlay) {
-        this.pieces = pieces;
-        this.players = players;
-        this.toPlay = toPlay;
     }
 
     public void makeMove(Move move, boolean addToHistory) {
@@ -255,9 +248,11 @@ public class Board {
             this.selectedPiece = null;
 
             if (moves.size() > 1) {
-                return Optional.of(new PromotionPanel(0, 0, moves, move -> {
+                this.waiting = true;
+                return Optional.of(new PromotionPanel(moves, move -> {
                     this.makeMove(move, true);
                     this.computePossibleMove();
+                    this.waiting = false;
                 }));
             }
         }
@@ -281,14 +276,6 @@ public class Board {
             return new ArrayList<>();
         }
         return this.possibleMoves.stream().filter(move -> move.getPiece() == this.selectedPiece && move.getEndPosition().equals(endPosition)).toList();
-    }
-
-    public Optional<Move> getSelectedPieceMove(Position endPosition) {
-        List<Move> selectedPieceMoves = this.getSelectedPieceMoves(endPosition);
-        if (selectedPieceMoves.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(this.getSelectedPieceMoves().get(0));
     }
 
     public EnPassantPossibleCapture getEnPassantPossibleCapture() {

@@ -18,13 +18,17 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
     private boolean showPins = false;
     private boolean showChecks = false;
 
+    private boolean whiteTop = false;
+
     private Image fond;
+    private Image fondReverse;
     private Board board;
 
     public BoardPanel(Board plateau){
         BoardPanel.INSTANCE = this;
         this.board = plateau;
-        this.fond = Toolkit.getDefaultToolkit().getImage("res/board.png");
+        this.fond        = Toolkit.getDefaultToolkit().getImage("res/board.png");
+        this.fondReverse = Toolkit.getDefaultToolkit().getImage("res/board_reverse.png");
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
@@ -32,20 +36,20 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);//méthode paint qui herite de la classe mere
-        g.drawImage(this.fond,0,0, this);
+        g.drawImage(this.whiteTop ? this.fondReverse : this.fond,0,0, this);
 
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
-                Piece piece = this.board.getPiece(x, 7-y);
+                Piece piece = this.board.getPiece(x, y);
                 if (piece != null && (this.board.getSelectedPiece() == null || this.board.getSelectedPiece() != piece)) {
-                   g.drawImage(piece.getImage(), x*64, y*64, 64, 64, null);
+                   g.drawImage(piece.getImage(), this.getScreenX(x), this.getScreenY(y), 64, 64, null);
                 }
             }
         }
 
         g.setColor(new Color(59, 92, 22));
         for (Move move : this.board.getSelectedPieceMoves()) {
-            g.fillOval(move.getEndPosition().getX() * 64 + 23, (7 - move.getEndPosition().getY()) * 64 + 23, 18, 18);
+            g.fillOval(this.getScreenX(move.getEndPosition().getX()) + 23, this.getScreenY(move.getEndPosition().getY()) + 23, 18, 18);
         }
 
         Piece piece = this.board.getSelectedPiece();
@@ -57,7 +61,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
         if (this.showThreats) {
             g.setColor(new Color(220, 55, 55, 100));
             for (Position position : this.board.getThreatenedPositions()) {
-                g.fillRect(position.getX()*64, (7-position.getY())*64+1, 64, 64);
+                g.fillRect(this.getScreenX(position.getX()), this.getScreenY(position.getY())+1, 64, 64);
             }
         }
 
@@ -66,7 +70,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             this.board.getPins()
                     .stream()
                     .flatMap(piecePin -> piecePin.getPossiblePositions().stream())
-                    .forEach(position -> g.fillRect(position.getX()*64, (7-position.getY())*64+1, 64, 64));
+                    .forEach(position -> g.fillRect(this.getScreenX(position.getX()), this.getScreenY(position.getY())+1, 64, 64));
         }
 
         if (this.showChecks) {
@@ -74,7 +78,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             this.board.getCheckSources()
                     .stream()
                     .flatMap(source -> source.getResolvingPositions().stream())
-                    .forEach(position -> g.fillRect(position.getX()*64, (7-position.getY())*64+1, 64, 64));
+                    .forEach(position -> g.fillRect(this.getScreenX(position.getX()), this.getScreenY(position.getY())+1, 64, 64));
         }
     }
 
@@ -90,22 +94,52 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int x = e.getX() / 64;
-        int y = 7 - (e.getY() / 64);
+        int x = this.getBoardX(e.getX());
+        int y = this.getBoardY(e.getY());
         if (x >= 0 && x <= 8 && y >= 0 && y <= 8) {
             this.board.onPressed(x, y);
-            this.repaint();
+        }
+    }
+
+    public int getScreenX(int boardX) {
+        return boardX * 64;
+    }
+
+    public int getScreenY(int boardY) {
+        if (this.whiteTop) {
+            return boardY * 64;
+        } else {
+            return (7 - boardY) * 64;
+        }
+    }
+
+    public int getBoardX(int screenX) {
+        return screenX / 64;
+    }
+
+    public int getBoardY(int screenY) {
+        if (this.whiteTop) {
+            return screenY / 64;
+        } else {
+            return 7 - (screenY / 64);
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        int x = e.getX() / 64;
-        int y = 7 - (e.getY() / 64);
+        int x = this.getBoardX(e.getX());
+        int y = this.getBoardY(e.getY());
         if (x >= 0 && x <= 8 && y >= 0 && y <= 8) {
             Optional<PromotionPanel> promotionPanelOptional = this.board.onRelease(x, y);
-            promotionPanelOptional.ifPresent(this::add);
-            this.repaint();
+            promotionPanelOptional.ifPresent(panel -> {
+                int promotionX = this.getScreenX(x);
+                int promotionY = this.getScreenY(y);
+                if (promotionY + 256 > 512) {
+                    promotionY -= 192;
+                }
+                panel.setPosition(promotionX, promotionY);
+                this.add(panel);
+            });
         }
     }
 
@@ -135,6 +169,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             case 'p' -> this.showPins = !this.showPins;
             case 'm', 't' -> this.showThreats = !this.showThreats;
             case 'c' -> this.showChecks = !this.showChecks;
+            case 'f' -> this.whiteTop = !this.whiteTop;
         }
 
     }

@@ -25,6 +25,7 @@ public class Rook extends SlidingPiece {
 
     public Rook(Team team, Position position) {
         super(team, position);
+        this.moved = true;
     }
 
     @Override

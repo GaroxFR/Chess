@@ -57,7 +57,11 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
         rightBloc.setLayout(null);
         rightBloc.setBounds(658, 216, 128, 490);
 
-        Timer repaintTimer = new Timer(10, e -> this.repaint());
+        Timer repaintTimer = new Timer(10, e -> {
+            if (plateau.isShouldRender()) {
+                this.repaint();
+            }
+        });
         repaintTimer.start();
 
         player1 = new JLabel("Player1" /*get name de la premiere fenetre*/);

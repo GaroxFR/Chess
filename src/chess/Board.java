@@ -10,12 +10,13 @@ import chess.player.Team;
 
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class Board {
 
-    private Piece[][] pieces = new Piece[8][8];
-    private Player[] players = new Player[2];
+    private final Piece[][] pieces = new Piece[8][8];
+    private final Player[] players = new Player[2];
     private Set<Move> possibleMoves = new HashSet<>();
     private final Set<Position> threatenedPositions = new HashSet<>();
     private final List<PiecePin> pins = new LinkedList<>();
@@ -31,6 +32,8 @@ public class Board {
 
     private final ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
     private boolean waiting = false;
+
+    private boolean shouldRender = true;
 
     public Board(Player[] players) {
         if (players.length != 2) {
@@ -83,9 +86,22 @@ public class Board {
 
     private void askNextMove() {
         if (this.players[this.toPlay.getIndex()] instanceof Computer) {
-            this.makeMove(((Computer) players[this.toPlay.getIndex()]).getNextMove(), true);
-            this.computePossibleMove();
-            this.askNextMove();
+            CompletableFuture<Move> future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                this.shouldRender = false;
+                return ((Computer) this.players[this.toPlay.getIndex()]).getNextMove();
+            });
+            future.thenAcceptAsync(move -> {
+                this.shouldRender = true;
+                this.makeMove(move, true);
+                this.computePossibleMove();
+                this.askNextMove();
+            });
+
         }
     }
 
@@ -123,11 +139,6 @@ public class Board {
     }
 
     public double evaluate() {
-
-        if (this.possibleMoves.isEmpty()) {
-            return Double.NEGATIVE_INFINITY;
-        }
-
         double evaluation = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -403,4 +414,7 @@ public class Board {
         }
     }
 
+    public boolean isShouldRender() {
+        return this.shouldRender;
+    }
 }

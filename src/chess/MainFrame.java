@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame /*implements ActionListener*/{
 
-    final int width = 786;
+    final int width = 800;
     final int height = 786;
     private JPanel mainBloc;
     private BoardPanel game;

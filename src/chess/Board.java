@@ -3,6 +3,8 @@ package chess;
 import chess.ihm.panels.PromotionPanel;
 import chess.move.*;
 import chess.piece.*;
+import chess.player.Computer;
+import chess.player.Human;
 import chess.player.Player;
 import chess.player.Team;
 
@@ -30,7 +32,15 @@ public class Board {
     private final ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
     private boolean waiting = false;
 
-    public Board() {
+    public Board(Player[] players) {
+        if (players.length != 2) {
+            return;
+        }
+
+        for (Player player : players) {
+            this.players[player.getTeam().getIndex()] = player;
+            player.setBoard(this);
+        }
     }
 
     public void makeMove(Move move, boolean addToHistory) {
@@ -71,6 +81,14 @@ public class Board {
         }
     }
 
+    private void askNextMove() {
+        if (this.players[this.toPlay.getIndex()] instanceof Computer) {
+            this.makeMove(((Computer) players[this.toPlay.getIndex()]).getNextMove(), true);
+            this.computePossibleMove();
+            this.askNextMove();
+        }
+    }
+
     public void unmakeMove(Move move) {
         this.setPiece(move.getStartPosition(), move.getPiece());
         this.setPiece(move.getEndPosition(), null);
@@ -104,6 +122,29 @@ public class Board {
         }
     }
 
+    public double evaluate() {
+
+        if (this.possibleMoves.isEmpty()) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
+        double evaluation = 0;
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Piece piece = this.getPiece(x, y);
+                if (piece != null && piece.isAlive()) {
+                    if (piece.getTeam() == this.toPlay) {
+                        evaluation += piece.getValue();
+                    } else {
+                        evaluation-= piece.getValue();
+                    }
+                }
+            }
+        }
+
+        return evaluation;
+    }
+
     public int countPossibleMoves(int depth) {
         if (depth == 0) {
             return 1;
@@ -121,7 +162,7 @@ public class Board {
         return sum;
     }
 
-    private void computePossibleMove() {
+    public void computePossibleMove() {
         this.possibleMoves.clear();
         this.threatenedPositions.clear();
         this.pins.clear();
@@ -243,7 +284,7 @@ public class Board {
     }
 
     public void onPressed(int x, int y) {
-        if (this.waiting) {
+        if (this.waiting || !(this.players[this.toPlay.getIndex()] instanceof Human)) {
             return;
         }
 
@@ -266,6 +307,7 @@ public class Board {
             if (moves.size() == 1) {
                 this.makeMove(moves.get(0), true);
                 this.computePossibleMove();
+                this.askNextMove();
             }
             this.selectedPiece = null;
 
@@ -275,6 +317,7 @@ public class Board {
                     this.makeMove(move, true);
                     this.computePossibleMove();
                     this.waiting = false;
+                    this.askNextMove();
                 }));
             }
         }
@@ -284,6 +327,10 @@ public class Board {
 
     public Piece getSelectedPiece() {
         return this.selectedPiece;
+    }
+
+    public List<Move> getPossibleMoves() {
+        return new ArrayList<>(this.possibleMoves);
     }
 
     public List<Move> getSelectedPieceMoves() {

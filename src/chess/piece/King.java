@@ -16,7 +16,7 @@ public class King extends Piece{
     private static Image ImgPieceBlack;
     private static final int[] CORNERS_X = {0, 7};
 
-    private final int firstRaw;
+    private final int firstrow;
 
     static {
         King.ImgPieceWhite = Toolkit.getDefaultToolkit().getImage("res/roi_b.png");
@@ -37,9 +37,9 @@ public class King extends Piece{
     public King(Team team, Position position) {
         super(team, position);
         if(team == Team.WHITE){
-            this.firstRaw = 0;
+            this.firstrow = 0;
         }else{
-            this.firstRaw = 7;
+            this.firstrow = 7;
         }
     }
 
@@ -64,13 +64,13 @@ public class King extends Piece{
 
         if(!this.hasMoved()) {
             for (int i : King.CORNERS_X) {
-                Piece piece = board.getPiece(i, this.firstRaw);
-                if(piece instanceof Rook && !((Rook) piece).hasMoved()) {
+                Piece piece = board.getPiece(i, this.firstrow);
+                if(piece instanceof Rook && !piece.hasMoved()) {
 
                     int dir = (int) Math.signum(piece.getPosition().getX() - this.position.getX());
                     boolean valid = true;
                     for (int x = this.position.getX(); (piece.getPosition().getX() - x) * dir >= 0; x += dir) {
-                        if ((x != piece.getPosition().getX() && x != this.position.getX() && board.getPiece(x, this.firstRaw) != null) || board.isThreatened(new Position(x, this.firstRaw))) {
+                        if ((x != piece.getPosition().getX() && x != this.position.getX() && board.getPiece(x, this.firstrow) != null) || board.isThreatened(new Position(x, this.firstrow))) {
                             valid = false;
                             break;
                         }

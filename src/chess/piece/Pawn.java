@@ -13,9 +13,9 @@ import java.util.Set;
 
 public class Pawn extends Piece {
 
-    private final int doubleMoveRaw;
+    private final int doubleMoverow;
     private final int moveDirection;
-    private final int promotionRaw;
+    private final int promotionrow;
     private static Image ImgPieceWhite;
     private static Image ImgPieceBlack;
 
@@ -28,13 +28,13 @@ public class Pawn extends Piece {
         super(team, position);
 
         if (team == Team.WHITE) {
-            this.doubleMoveRaw = 1;
+            this.doubleMoverow = 1;
             this.moveDirection = +1;
-            this.promotionRaw = 7;
+            this.promotionrow = 7;
         } else {
-            this.doubleMoveRaw = 6;
+            this.doubleMoverow = 6;
             this.moveDirection = -1;
-            this.promotionRaw = 0;
+            this.promotionrow = 0;
         }
     }
 
@@ -45,7 +45,7 @@ public class Pawn extends Piece {
 
         Position nextPosition = this.position.add(0, this.moveDirection);
         if (nextPosition.isInBoard() && (pin == null || pin.isPossible(nextPosition)) && board.getPiece(nextPosition) == null) {
-            if (nextPosition.getY() == this.promotionRaw) {
+            if (nextPosition.getY() == this.promotionrow) {
                 moves.addAll(this.getPromotionMoves(nextPosition, null));
             } else {
                 moves.add(new Move(this.position, nextPosition, this));
@@ -53,7 +53,7 @@ public class Pawn extends Piece {
         }
 
         nextPosition = this.position.add(0, 2 * this.moveDirection);
-        if (this.position.getY() == this.doubleMoveRaw && nextPosition.isInBoard() && (pin == null || pin.isPossible(nextPosition)) && board.getPiece(this.position.add(0, this.moveDirection)) == null &&  board.getPiece(nextPosition) == null) {
+        if (this.position.getY() == this.doubleMoverow && nextPosition.isInBoard() && (pin == null || pin.isPossible(nextPosition)) && board.getPiece(this.position.add(0, this.moveDirection)) == null &&  board.getPiece(nextPosition) == null) {
             EnPassantPossibleCapture enPassantPossibleCapture = new EnPassantPossibleCapture(this.position.add(0, this.moveDirection), this);
             Move move = new Move(this.position, nextPosition, this);
             move.setEnPassantPossibleCapture(enPassantPossibleCapture);
@@ -67,7 +67,7 @@ public class Pawn extends Piece {
             }
 
             if (board.getPiece(nextPosition) != null && board.getPiece(nextPosition).getTeam() != this.team) {
-                if (nextPosition.getY() == this.promotionRaw) {
+                if (nextPosition.getY() == this.promotionrow) {
                     moves.addAll(this.getPromotionMoves(nextPosition, board.getPiece(nextPosition)));
                 } else {
                     moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));

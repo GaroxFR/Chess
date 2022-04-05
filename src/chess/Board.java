@@ -199,6 +199,25 @@ public class Board {
             this.toPlay = Team.BLACK;
         }
 
+        for(char c : splitted[2].toCharArray()) {
+            if(c == '-'){
+                break;
+            }
+            if(c == 'k'){
+                this.getPiece(7,7).setMoved(false);
+            }
+            if(c == 'q'){
+                this.getPiece(0,7).setMoved(false);
+            }
+            if(c == 'K'){
+                this.getPiece(7,0).setMoved(false);
+            }
+            if(c == 'Q'){
+                this.getPiece(0,0).setMoved(false);
+            }
+
+        }
+
 
 
         this.computePossibleMove();

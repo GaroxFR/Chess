@@ -44,7 +44,7 @@ public class MainFrame extends JFrame /*implements ActionListener*/{
         topBloc = new JPanel();
         topBloc.setLayout(null);
         topBloc.setBounds(0, 0,this.width,96);
-        this.background = new ImageIcon("res/images/background2.png");
+        this.background = new ImageIcon("res/images/background_war.png");
         backgroundLabel = new JLabel(this.background,JLabel.CENTER);
         backgroundLabel.setBounds(0,0,this.width,96);
         topBloc.add(backgroundLabel);

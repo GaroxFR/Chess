@@ -138,8 +138,8 @@ public class Board {
         }
     }
 
-    public double evaluate() {
-        double evaluation = 0;
+    public float evaluate() {
+        float evaluation = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Piece piece = this.getPiece(x, y);

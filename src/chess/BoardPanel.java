@@ -172,18 +172,20 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener, Mo
             case 'f' -> this.whiteTop = !this.whiteTop;
         }
 
+
+
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT -> board.goBackHistory();
             case KeyEvent.VK_RIGHT -> board.goForwardHistory();
         }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

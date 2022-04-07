@@ -4,8 +4,11 @@ import chess.Board;
 import chess.move.Move;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class Computer extends Player{
+
+    boolean aborted = false;
 
     public Computer(Team team) {
         super(team, "Ordinateur");
@@ -15,27 +18,42 @@ public class Computer extends Player{
         this.board.getAudioPlayer().setEnabled(false);
 
         List<Move> moves = this.board.getPossibleMoves();
-        Map<Move, Double> evaluations = new HashMap<>();
+        List<Move> finalMoves = new ArrayList<>();
+        Map<Move, Float> evaluations = new HashMap<>();
 
-        long time = System.currentTimeMillis();
-        int depth = 0;
-        while (System.currentTimeMillis() - time <= 2000) {
+        int depth = -1;
+        this.aborted = false;
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(1500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.aborted = true;
+        });
+
+        while (!this.aborted) {
             depth++;
             evaluations.clear();
             for (Move move : moves) {
                 this.board.makeMove(move, false);
-                evaluations.put(move, -this.evaluate( depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY));
+                evaluations.put(move, -this.evaluate(depth, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY));
                 this.board.unmakeMove(move);
             }
             moves.sort(Comparator.comparing(evaluations::get, Comparator.reverseOrder()));
-
+            if (!this.aborted) {
+                finalMoves = new ArrayList<>(moves);
+            }
         }
-        System.out.println(depth);
+        System.out.println(depth-1);
         this.board.getAudioPlayer().setEnabled(true);
-        return moves.get(0);
+        return finalMoves.get(0);
     }
 
-    public double evaluate(int depth, double alpha, double beta) {
+    public float evaluate(int depth, float alpha, float beta) {
+        if (this.aborted) {
+            return 0;
+        }
         if (depth == 0) {
             return this.evaluateOnlyCaptures(alpha, beta);
         }
@@ -44,14 +62,14 @@ public class Computer extends Player{
         List<Move> moves = this.board.getPossibleMoves();
         if (moves.isEmpty()) {
             if (!board.getCheckSources().isEmpty()) {
-                return Double.NEGATIVE_INFINITY;
+                return Float.NEGATIVE_INFINITY;
             }
             return 0;
         }
 
         for (Move childMove : moves) {
             this.board.makeMove(childMove, false);
-            double evaluation = -this.evaluate(depth - 1, -beta, -alpha);
+            float evaluation = -this.evaluate(depth - 1, -beta, -alpha);
             this.board.unmakeMove(childMove);
             if (evaluation >= beta) {
                 return beta;
@@ -61,9 +79,9 @@ public class Computer extends Player{
         return alpha;
     }
 
-    public double evaluateOnlyCaptures(double alpha, double beta) {
+    public float evaluateOnlyCaptures(float alpha, float beta) {
 
-        double evaluation = this.board.evaluate();
+        float evaluation = this.board.evaluate();
         if (evaluation >= beta) {
             return beta;
         }

@@ -46,6 +46,18 @@ public class Board {
         }
     }
 
+    public Board(Piece[][] pieces, EnPassantPossibleCapture enPassantPossibleCapture) {
+        this.chessAudioPlayer.setEnabled(false);
+        this.enPassantPossibleCapture = enPassantPossibleCapture;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (pieces[i][j] != null) {
+                    this.pieces[i][j] = pieces[i][j].clone();
+                }
+            }
+        }
+    }
+
     public void makeMove(Move move, boolean addToHistory) {
         move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved()));
         move.getPiece().setMoved(true);
@@ -416,5 +428,9 @@ public class Board {
 
     public boolean isShouldRender() {
         return this.shouldRender;
+    }
+
+    public Board cloneComputationalBoard() {
+        return new Board(this.pieces, this.enPassantPossibleCapture);
     }
 }

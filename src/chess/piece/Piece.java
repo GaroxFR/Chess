@@ -19,6 +19,12 @@ public abstract class Piece {
         this.position = position;
     }
 
+    public Piece(Team team, Position position, boolean moved) {
+        this.team = team;
+        this.position = position;
+        this.moved = moved;
+    }
+
     public Team getTeam() {
         return this.team;
     }
@@ -54,4 +60,7 @@ public abstract class Piece {
     }
 
     public abstract int getValue();
+
+    @Override
+    public abstract Piece clone();
 }

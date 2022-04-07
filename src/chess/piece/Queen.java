@@ -32,6 +32,10 @@ public class Queen extends SlidingPiece {
         super(team, position);
     }
 
+    public Queen(Team team, Position position, boolean moved) {
+        super(team, position, moved);
+    }
+
     @Override
     protected Position[] getSlidingDirections() {
         return Queen.DIRECTIONS;
@@ -48,5 +52,10 @@ public class Queen extends SlidingPiece {
     @Override
     public int getValue() {
         return 9;
+    }
+
+    @Override
+    public Piece clone() {
+        return new Queen(this.team, this.position, this.moved);
     }
 }

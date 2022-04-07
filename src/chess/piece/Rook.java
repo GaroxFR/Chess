@@ -24,8 +24,11 @@ public class Rook extends SlidingPiece {
     };
 
     public Rook(Team team, Position position) {
-        super(team, position);
-        this.moved = true;
+        super(team, position, true);
+    }
+
+    public Rook(Team team, Position position, boolean moved) {
+        super(team, position, moved);
     }
 
     @Override
@@ -44,5 +47,10 @@ public class Rook extends SlidingPiece {
     @Override
     public int getValue() {
         return 5;
+    }
+
+    @Override
+    public Piece clone() {
+        return new Rook(this.team, this.position, this.moved);
     }
 }

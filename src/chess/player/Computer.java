@@ -4,11 +4,11 @@ import chess.Board;
 import chess.move.Move;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 public class Computer extends Player{
 
-    boolean aborted = false;
+    private boolean aborted = false;
 
     public Computer(Team team) {
         super(team, "Ordinateur");
@@ -32,13 +32,23 @@ public class Computer extends Player{
             this.aborted = true;
         });
 
+        List<CompletableFuture<?>> futures = new LinkedList<>();
         while (!this.aborted) {
             depth++;
+            final int d = depth;
             evaluations.clear();
             for (Move move : moves) {
-                this.board.makeMove(move, false);
-                evaluations.put(move, -this.evaluate(depth, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY));
-                this.board.unmakeMove(move);
+                futures.add(CompletableFuture.runAsync(() -> {
+                    Board computationalBoard = this.board.cloneComputationalBoard();
+                    this.board.makeMove(move, false);
+                    evaluations.put(move, -this.evaluate(d, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, computationalBoard));
+                    this.board.unmakeMove(move);
+                }));
+            }
+            try {
+                CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
             moves.sort(Comparator.comparing(evaluations::get, Comparator.reverseOrder()));
             if (!this.aborted) {
@@ -50,27 +60,27 @@ public class Computer extends Player{
         return finalMoves.get(0);
     }
 
-    public float evaluate(int depth, float alpha, float beta) {
+    public float evaluate(int depth, float alpha, float beta, Board computationalBoard) {
         if (this.aborted) {
             return 0;
         }
         if (depth == 0) {
-            return this.evaluateOnlyCaptures(alpha, beta);
+            return this.evaluateOnlyCaptures(alpha, beta, computationalBoard);
         }
 
-        this.board.computePossibleMove();
+        computationalBoard.computePossibleMove();
         List<Move> moves = this.board.getPossibleMoves();
         if (moves.isEmpty()) {
-            if (!board.getCheckSources().isEmpty()) {
+            if (!computationalBoard.getCheckSources().isEmpty()) {
                 return Float.NEGATIVE_INFINITY;
             }
             return 0;
         }
 
         for (Move childMove : moves) {
-            this.board.makeMove(childMove, false);
-            float evaluation = -this.evaluate(depth - 1, -beta, -alpha);
-            this.board.unmakeMove(childMove);
+            computationalBoard.makeMove(childMove, false);
+            float evaluation = -this.evaluate(depth - 1, -beta, -alpha, computationalBoard);
+            computationalBoard.unmakeMove(childMove);
             if (evaluation >= beta) {
                 return beta;
             }
@@ -79,24 +89,24 @@ public class Computer extends Player{
         return alpha;
     }
 
-    public float evaluateOnlyCaptures(float alpha, float beta) {
+    public float evaluateOnlyCaptures(float alpha, float beta, Board computationalBoard) {
 
         float evaluation = this.board.evaluate();
         if (evaluation >= beta) {
             return beta;
         }
-        alpha = Math.max(alpha, this.board.evaluate());
+        alpha = Math.max(alpha, computationalBoard.evaluate());
 
-        this.board.computePossibleMove();
+        computationalBoard.computePossibleMove();
         List<Move> moves = this.board.getPossibleMoves();
         for (Move childMove : moves) {
             if (!childMove.isCapture()) {
                 continue;
             }
 
-            this.board.makeMove(childMove, false);
-            evaluation = -this.evaluateOnlyCaptures(-beta, -alpha);
-            this.board.unmakeMove(childMove);
+            computationalBoard.makeMove(childMove, false);
+            evaluation = -this.evaluateOnlyCaptures(-beta, -alpha, computationalBoard);
+            computationalBoard.unmakeMove(childMove);
             if (evaluation >= beta) {
                 return beta;
             }

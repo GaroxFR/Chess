@@ -35,7 +35,11 @@ public class King extends Piece{
     };
 
     public King(Team team, Position position) {
-        super(team, position);
+        this(team, position, false);
+    }
+
+    public King(Team team, Position position, boolean moved) {
+        super(team, position, moved);
         if(team == Team.WHITE){
             this.firstrow = 0;
         }else{
@@ -114,4 +118,8 @@ public class King extends Piece{
         return 0;
     }
 
+    @Override
+    public Piece clone() {
+        return new King(this.team, this.position, this.moved);
+    }
 }

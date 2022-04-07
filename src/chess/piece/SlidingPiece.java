@@ -17,6 +17,9 @@ public abstract class SlidingPiece extends Piece {
         super(team, position);
     }
 
+    public SlidingPiece(Team team, Position position, boolean moved) {
+        super(team, position, moved);
+    }
     @Override
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();

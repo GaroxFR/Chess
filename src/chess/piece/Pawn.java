@@ -25,7 +25,11 @@ public class Pawn extends Piece {
     }
 
     public Pawn(Team team, Position position) {
-        super(team, position);
+        this(team, position, false);
+    }
+
+    public Pawn(Team team, Position position, boolean moved) {
+        super(team, position, moved);
 
         if (team == Team.WHITE) {
             this.doubleMoverow = 1;
@@ -123,5 +127,10 @@ public class Pawn extends Piece {
     @Override
     public int getValue() {
         return 1;
+    }
+
+    @Override
+    public Piece clone() {
+        return new Pawn(this.team, this.position, this.moved);
     }
 }

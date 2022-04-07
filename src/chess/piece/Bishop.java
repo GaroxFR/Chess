@@ -26,6 +26,10 @@ public class Bishop extends SlidingPiece {
         super(team, position);
     }
 
+    public Bishop(Team team, Position position, boolean moved) {
+        super(team, position, moved);
+    }
+
     @Override
     protected Position[] getSlidingDirections() {
         return Bishop.DIRECTIONS;
@@ -44,5 +48,8 @@ public class Bishop extends SlidingPiece {
         return 3;
     }
 
-
+    @Override
+    public Piece clone() {
+        return new Bishop(this.team, this.position, this.moved);
+    }
 }

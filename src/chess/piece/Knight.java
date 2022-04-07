@@ -41,6 +41,10 @@ public class Knight extends Piece {
 
     }
 
+    public Knight(Team team, Position position, boolean moved) {
+        super(team, position, moved);
+    }
+
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();
         PiecePin pin = board.getPiecePin(this);
@@ -86,5 +90,10 @@ public class Knight extends Piece {
     @Override
     public int getValue() {
         return 3;
+    }
+
+    @Override
+    public Piece clone() {
+        return new Knight(this.team, this.position, this.moved);
     }
 }

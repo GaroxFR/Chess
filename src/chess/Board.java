@@ -46,9 +46,10 @@ public class Board {
         }
     }
 
-    public Board(Piece[][] pieces, EnPassantPossibleCapture enPassantPossibleCapture) {
+    public Board(Piece[][] pieces, EnPassantPossibleCapture enPassantPossibleCapture, Team toPlay) {
         this.chessAudioPlayer.setEnabled(false);
         this.enPassantPossibleCapture = enPassantPossibleCapture;
+        this.toPlay = toPlay;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (pieces[i][j] != null) {
@@ -82,6 +83,12 @@ public class Board {
             this.setPiece(move.getCastleInfo().getOldRookPosition(), null);
         }
 
+        if (move.getEndPosition().getX() == -1 || move.getEndPosition().getY() == -1) {
+            System.out.println(move.getEndPosition().getX() +" " + move.getEndPosition().getY());
+            System.out.println(move.getPiece());
+            System.out.println(move.getCastleInfo());
+        }
+
         this.setPiece(move.getStartPosition(), null);
         this.setPiece(move.getEndPosition(), move.getPiece());
 
@@ -98,21 +105,13 @@ public class Board {
 
     private void askNextMove() {
         if (this.players[this.toPlay.getIndex()] instanceof Computer) {
-            CompletableFuture<Move> future = CompletableFuture.supplyAsync(() -> {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                this.shouldRender = false;
-                return ((Computer) this.players[this.toPlay.getIndex()]).getNextMove();
-            });
-            future.thenAcceptAsync(move -> {
-                this.shouldRender = true;
-                this.makeMove(move, true);
-                this.computePossibleMove();
-                this.askNextMove();
-            });
+            CompletableFuture.supplyAsync(() -> ((Computer) this.players[this.toPlay.getIndex()]).getNextMove())
+                    .thenAcceptAsync(move -> {
+                        this.restoreHistory();
+                        this.makeMove(move, true);
+                        this.computePossibleMove();
+                        this.askNextMove();
+                    }).whenComplete((unused, throwable) -> throwable.printStackTrace());
 
         }
     }
@@ -164,7 +163,6 @@ public class Board {
                 }
             }
         }
-
         return evaluation;
     }
 
@@ -426,11 +424,19 @@ public class Board {
         }
     }
 
+    public void restoreHistory() {
+        this.chessAudioPlayer.setEnabled(false);
+        while (this.moveIndex > 0) {
+            this.goForwardHistory();
+        }
+        this.chessAudioPlayer.setEnabled(true);
+    }
+
     public boolean isShouldRender() {
         return this.shouldRender;
     }
 
     public Board cloneComputationalBoard() {
-        return new Board(this.pieces, this.enPassantPossibleCapture);
+        return new Board(this.pieces, this.enPassantPossibleCapture, this.toPlay);
     }
 }

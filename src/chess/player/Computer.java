@@ -2,6 +2,7 @@ package chess.player;
 
 import chess.Board;
 import chess.move.Move;
+import chess.move.component.Capture;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -71,7 +72,7 @@ public class Computer extends Player{
         }
 
         for (Move childMove : moves) {
-            computationalBoard.makeMove(childMove, false);
+            computationalBoard.makeMove(childMove);
             float evaluation = -this.evaluate(depth - 1, -beta, -alpha, computationalBoard, false);
             computationalBoard.unmakeMove(childMove);
             if (storeEvaluation) {
@@ -99,11 +100,11 @@ public class Computer extends Player{
         computationalBoard.computePossibleMove();
         List<Move> moves = computationalBoard.getPossibleMoves();
         for (Move childMove : moves) {
-            if (!childMove.isCapture()) {
+            if (childMove.getMoveComponent(Capture.class) != null) {
                 continue;
             }
 
-            computationalBoard.makeMove(childMove, false);
+            computationalBoard.makeMove(childMove);
             evaluation = -this.evaluateOnlyCaptures(limit - 1, -beta, -alpha, computationalBoard);
             computationalBoard.unmakeMove(childMove);
             if (evaluation >= beta) {

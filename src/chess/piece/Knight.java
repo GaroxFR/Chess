@@ -5,6 +5,7 @@ import chess.move.CheckSource;
 import chess.move.Move;
 import chess.Position;
 import chess.move.PiecePin;
+import chess.move.component.Capture;
 import chess.player.Team;
 
 import java.awt.Image;
@@ -52,7 +53,11 @@ public class Knight extends Piece {
         for (Position direction : Knight.DIRECTIONS) {
            Position test = direction.add(this.position);
             if (test.isInBoard() && (pin == null || pin.isPossible(test)) && (board.getPiece(test) == null || board.getPiece(test).getTeam() != this.team)) {
-                moves.add(new Move(this.position, test, this, board.getPiece(test))); //renvoie null si pas de pion
+                if (board.getPiece(test) != null) {
+                    moves.add(new Move(this.position, test, this, new Capture(board.getPiece(test))));
+                } else {
+                    moves.add(new Move(this.position, test, this));
+                }
             }
 
         }

@@ -1,6 +1,7 @@
 package chess.ihm.panels;
 
 import chess.move.Move;
+import chess.move.component.Promotion;
 import chess.piece.Bishop;
 import chess.piece.Knight;
 import chess.piece.Queen;
@@ -22,11 +23,11 @@ public class PromotionPanel extends JPanel implements MouseListener {
 
     public PromotionPanel(List<Move> promotionMoves, Consumer<Move> moveConsumer) {
         for (Move promotionMove : promotionMoves) {
-            if (promotionMove.getPromotion() == null) {
+            if (promotionMove.getMoveComponent(Promotion.class) == null) {
                 continue;
             }
 
-            this.promotionMoveMap.put(promotionMove.getPromotion().getPiece().getClass(), promotionMove);
+            this.promotionMoveMap.put(promotionMove.getMoveComponent(Promotion.class).getPiece().getClass(), promotionMove);
         }
         this.moveConsumer = moveConsumer;
 
@@ -50,10 +51,10 @@ public class PromotionPanel extends JPanel implements MouseListener {
             g.fillRect(5, (int) (point.getY() / 64) * 64, 54, 64);
         }
 
-        g.drawImage(this.promotionMoveMap.get(Queen.class).getPromotion().getPiece().getImage(), 0, 0, 64, 64, null);
-        g.drawImage(this.promotionMoveMap.get(Rook.class).getPromotion().getPiece().getImage(), 0, 64, 64, 64, null);
-        g.drawImage(this.promotionMoveMap.get(Bishop.class).getPromotion().getPiece().getImage(), 0, 128, 64, 64, null);
-        g.drawImage(this.promotionMoveMap.get(Knight.class).getPromotion().getPiece().getImage(), 0, 192, 64, 64, null);
+        g.drawImage(this.promotionMoveMap.get(Queen.class).getMoveComponent(Promotion.class).getPiece().getImage(), 0, 0, 64, 64, null);
+        g.drawImage(this.promotionMoveMap.get(Rook.class).getMoveComponent(Promotion.class).getPiece().getImage(), 0, 64, 64, 64, null);
+        g.drawImage(this.promotionMoveMap.get(Bishop.class).getMoveComponent(Promotion.class).getPiece().getImage(), 0, 128, 64, 64, null);
+        g.drawImage(this.promotionMoveMap.get(Knight.class).getMoveComponent(Promotion.class).getPiece().getImage(), 0, 192, 64, 64, null);
     }
 
     @Override

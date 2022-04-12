@@ -5,6 +5,7 @@ import chess.move.CheckSource;
 import chess.move.Move;
 import chess.Position;
 import chess.move.PiecePin;
+import chess.move.component.Capture;
 import chess.player.Team;
 
 import java.util.HashSet;
@@ -36,7 +37,7 @@ public abstract class SlidingPiece extends Piece {
                 if (board.getPiece(nextPosition) != null) {
                     Piece piece = board.getPiece(nextPosition);
                     if (piece.getTeam() != this.getTeam()) {
-                        moves.add(new Move(this.position, nextPosition, this, piece));
+                        moves.add(new Move(this.position, nextPosition, this, new Capture(piece)));
                     }
                     break;
                 }

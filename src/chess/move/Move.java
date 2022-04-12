@@ -1,6 +1,9 @@
 package chess.move;
 
+import chess.Board;
 import chess.Position;
+import chess.move.component.MoveComponent;
+import chess.move.component.Promotion;
 import chess.piece.Piece;
 
 import java.util.Objects;
@@ -10,23 +13,42 @@ public class Move {
     private final Position startPosition;
     private final Position endPosition;
     private final Piece piece;
-    private final Piece capturedPiece;
+    private final MoveComponent[] moveComponents;
 
     private PreMoveState preMoveState = null;
 
-    private EnPassantPossibleCapture enPassantPossibleCapture = null;
-    private CastleInfo castleInfo;
-    private Promotion promotion = null;
 
-    public Move(Position startPosition, Position endPosition, Piece piece) {
-        this(startPosition, endPosition, piece, null);
-    }
-
-    public Move(Position startPosition, Position endPosition, Piece piece, Piece capturedPiece) {
+    public Move(Position startPosition, Position endPosition, Piece piece, MoveComponent... moveComponents) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.piece = piece;
-        this.capturedPiece = capturedPiece;
+        this.moveComponents = moveComponents;
+    }
+
+    public void apply(Board board) {
+        for (MoveComponent moveComponent : this.moveComponents) {
+            moveComponent.apply(board);
+        }
+
+        board.setPiece(this.endPosition, this.piece);
+        board.setPiece(this.startPosition, null);
+
+        for (MoveComponent moveComponent : this.moveComponents) {
+            moveComponent.applyPostMove(board);
+        }
+    }
+
+    public void revert(Board board) {
+        for (MoveComponent moveComponent : this.moveComponents) {
+            moveComponent.revertPostMove(board);
+        }
+
+        board.setPiece(this.startPosition, this.piece);
+        board.setPiece(this.endPosition, null);
+
+        for (MoveComponent moveComponent : this.moveComponents) {
+            moveComponent.revert(board);
+        }
     }
 
     public Position getStartPosition() {
@@ -39,34 +61,6 @@ public class Move {
 
     public Piece getPiece() {
         return this.piece;
-    }
-
-    public boolean isCapture() {
-        return this.capturedPiece != null;
-    }
-
-    public Piece getCapturedPiece() {
-        return this.capturedPiece;
-    }
-
-    public boolean doGenerateEnPassant() {
-        return this.enPassantPossibleCapture != null;
-    }
-
-    public EnPassantPossibleCapture getEnPassantPossibleCapture() {
-        return this.enPassantPossibleCapture;
-    }
-
-    public void setEnPassantPossibleCapture(EnPassantPossibleCapture enPassantPossibleCapture) {
-        this.enPassantPossibleCapture = enPassantPossibleCapture;
-    }
-
-    public CastleInfo getCastleInfo() {
-        return this.castleInfo;
-    }
-
-    public void setCastleInfo(CastleInfo castleInfo) {
-        this.castleInfo = castleInfo;
     }
 
     @Override
@@ -89,16 +83,18 @@ public class Move {
         this.preMoveState = preMoveState;
     }
 
-    public Promotion getPromotion() {
-        return this.promotion;
-    }
+    public <T extends MoveComponent> T getMoveComponent(Class<T> clazz) {
+        for (MoveComponent moveComponent : this.moveComponents) {
+            if (moveComponent.getClass().equals(clazz)) {
+                return clazz.cast(moveComponent);
+            }
+        }
 
-    public void setPromotion(Promotion promotion) {
-        this.promotion = promotion;
+        return null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.startPosition, this.endPosition, this.promotion);
+        return Objects.hash(this.startPosition, this.endPosition, this.getMoveComponent(Promotion.class));
     }
 }

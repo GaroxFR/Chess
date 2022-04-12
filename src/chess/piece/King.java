@@ -1,7 +1,8 @@
 package chess.piece;
 
 import chess.Board;
-import chess.move.CastleInfo;
+import chess.move.component.Capture;
+import chess.move.component.Castle;
 import chess.move.Move;
 import chess.Position;
 import chess.player.Team;
@@ -62,7 +63,11 @@ public class King extends Piece{
         for (Position direction : King.DIRECTIONS) {
             Position nextPosition = this.position.add(direction);
             if (nextPosition.isInBoard() && !board.isThreatened(nextPosition) && (board.getPiece(nextPosition) == null || board.getPiece(nextPosition).getTeam() != this.team)) {
-                moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
+                if (board.getPiece(nextPosition) != null) {
+                    moves.add(new Move(this.position, nextPosition, this, new Capture(board.getPiece(nextPosition))));
+                } else {
+                    moves.add(new Move(this.position, nextPosition, this));
+                }
             }
         }
 
@@ -80,8 +85,7 @@ public class King extends Piece{
                         }
                     }
                     if (valid) {
-                        Move move = new Move(this.position, this.position.add(2 * dir, 0), this);
-                        move.setCastleInfo(new CastleInfo(piece, piece.getPosition(), this.position.add(dir, 0)));
+                        Move move = new Move(this.position, this.position.add(2 * dir, 0), this, new Castle(piece, piece.getPosition(), this.position.add(dir, 0)));
                         moves.add(move);
                     }
                 }

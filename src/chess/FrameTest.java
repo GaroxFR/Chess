@@ -8,7 +8,7 @@ import chess.player.Team;
 public class FrameTest {
     public static void main (String[]args){
         Player[] players = {
-                new Computer(Team.BLACK),
+                new Human(Team.BLACK, "Joueur"),
                 new Human(Team.WHITE, "Joueur")
         };
         Board board = new Board(players);

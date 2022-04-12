@@ -2,6 +2,8 @@ package chess;
 
 import chess.ihm.panels.PromotionPanel;
 import chess.move.*;
+import chess.move.component.Capture;
+import chess.move.component.EnPassantPossibleCapture;
 import chess.piece.*;
 import chess.player.Computer;
 import chess.player.Human;
@@ -11,7 +13,6 @@ import chess.player.Team;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 public class Board {
 
@@ -59,56 +60,52 @@ public class Board {
         }
     }
 
-    public void makeMove(Move move, boolean addToHistory) {
-        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved()));
-        move.getPiece().setMoved(true);
-
-        if (move.isCapture()) {
-            move.getCapturedPiece().setAlive(false); // Dit a la pièce capturée qu'elle ne joue plus
-            this.capturedPiece.add(move.getCapturedPiece()); // ajouts dans la liste des pions morts
-            this.setPiece(move.getCapturedPiece().getPosition(), null);
+    public void playMove(Move move) {
+        Capture capture = move.getMoveComponent(Capture.class);
+        if (capture != null) {
+            this.capturedPiece.add(capture.getCapturedPiece());
             this.chessAudioPlayer.playCaptureSound();
         } else {
             this.chessAudioPlayer.playMoveSound();
         }
 
-        if (move.doGenerateEnPassant()) {
-            this.enPassantPossibleCapture = move.getEnPassantPossibleCapture();
-        } else {
-            this.enPassantPossibleCapture = null;
-        }
+        this.makeMove(move);
 
-        if (move.getCastleInfo() != null) {
-            this.setPiece(move.getCastleInfo().getNewRookPosition(), move.getCastleInfo().getRook());
-            this.setPiece(move.getCastleInfo().getOldRookPosition(), null);
-        }
-
-        if (move.getEndPosition().getX() == -1 || move.getEndPosition().getY() == -1) {
-            System.out.println(move.getEndPosition().getX() +" " + move.getEndPosition().getY());
-            System.out.println(move.getPiece());
-            System.out.println(move.getCastleInfo());
-        }
-
-        this.setPiece(move.getStartPosition(), null);
-        this.setPiece(move.getEndPosition(), move.getPiece());
-
-        if (move.getPromotion() != null) {
-            this.setPiece(move.getEndPosition(), move.getPromotion().getPiece());
-        }
-
-        this.switchTurn();
-
-        if (addToHistory) {
-            this.moveHistory.add(0, move);
-        }
+        this.moveHistory.add(0, move);
     }
 
+    public void unplayMove(Move move) {
+        Capture capture = move.getMoveComponent(Capture.class);
+        if (capture != null) {
+            this.capturedPiece.remove(capture.getCapturedPiece());
+        }
+
+        this.unmakeMove(move);
+    }
+
+    public void makeMove(Move move) {
+        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved()));
+        move.getPiece().setMoved(true);
+
+        move.apply(this);
+
+        this.switchTurn();
+    }
+
+    public void unmakeMove(Move move) {
+        this.enPassantPossibleCapture = move.getPreMoveState().getEnPassantPossibleCapture();
+        move.getPiece().setMoved(move.getPreMoveState().hadPieceMove());
+
+        move.revert(this);
+
+        this.switchTurn();
+    }
     private void askNextMove() {
         if (this.players[this.toPlay.getIndex()] instanceof Computer) {
             CompletableFuture.supplyAsync(() -> ((Computer) this.players[this.toPlay.getIndex()]).getNextMove())
                     .thenAcceptAsync(move -> {
                         this.restoreHistory();
-                        this.makeMove(move, true);
+                        this.playMove(move);
                         this.computePossibleMove();
                         this.askNextMove();
                     }).whenComplete((unused, throwable) -> throwable.printStackTrace());
@@ -116,30 +113,7 @@ public class Board {
         }
     }
 
-    public void unmakeMove(Move move) {
-        this.setPiece(move.getStartPosition(), move.getPiece());
-        this.setPiece(move.getEndPosition(), null);
 
-        this.enPassantPossibleCapture = move.getPreMoveState().getEnPassantPossibleCapture();
-        move.getPiece().setMoved(move.getPreMoveState().hadPieceMove());
-
-        if (move.isCapture()) {
-            this.setPiece(move.getCapturedPiece().getPosition(), move.getCapturedPiece());
-            move.getCapturedPiece().setAlive(true);
-            this.capturedPiece.remove(move.getCapturedPiece());
-        }
-
-        if (move.getCastleInfo() != null) {
-            this.setPiece(move.getCastleInfo().getOldRookPosition(), move.getCastleInfo().getRook());
-            this.setPiece(move.getCastleInfo().getNewRookPosition(), null);
-        }
-
-        if (move.getPromotion() != null) {
-            this.setPiece(move.getStartPosition(), move.getPromotion().getPawn());
-        }
-
-        this.switchTurn();
-    }
 
     public void switchTurn() {
         if (this.toPlay == Team.WHITE) {
@@ -176,7 +150,7 @@ public class Board {
         Set<Move> copyMove =  new HashSet<>(this.possibleMoves);
         for (Move possibleMove : copyMove) {
 
-            this.makeMove(possibleMove, false);
+            this.makeMove(possibleMove);
             sum += this.countPossibleMoves(depth - 1);
             this.unmakeMove(possibleMove);
         }
@@ -255,7 +229,7 @@ public class Board {
                     case 'R' -> new Rook(Team.WHITE, new Position(x, y));
                     default -> null;
                 };
-                this.setPiece(x, y, piece);
+                this.setPiece(new Position(x, y), piece);
                 x++;
             }
         }
@@ -298,15 +272,12 @@ public class Board {
         return this.getPiece(position.getX(), position.getY());
     }
 
-    public void setPiece(int x, int y, Piece piece) {
-        if (piece != null) {
-            piece.setPosition(new Position(x, y));
-        }
-        this.pieces[x][y] = piece;
-    }
 
     public void setPiece(Position position, Piece piece) {
-        this.setPiece(position.getX(), position.getY(), piece);
+        if (piece != null) {
+            piece.setPosition(position);
+        }
+        this.pieces[position.getX()][position.getY()] = piece;
     }
 
     public void onPressed(int x, int y) {
@@ -331,7 +302,7 @@ public class Board {
             List<Move> moves = this.getSelectedPieceMoves(new Position(x, y));
 
             if (moves.size() == 1) {
-                this.makeMove(moves.get(0), true);
+                this.playMove(moves.get(0));
                 this.computePossibleMove();
                 this.askNextMove();
             }
@@ -340,7 +311,7 @@ public class Board {
             if (moves.size() > 1) {
                 this.waiting = true;
                 return Optional.of(new PromotionPanel(moves, move -> {
-                    this.makeMove(move, true);
+                    this.playMove(move);
                     this.computePossibleMove();
                     this.waiting = false;
                     this.askNextMove();
@@ -375,6 +346,10 @@ public class Board {
 
     public EnPassantPossibleCapture getEnPassantPossibleCapture() {
         return this.enPassantPossibleCapture;
+    }
+
+    public void setEnPassantPossibleCapture(EnPassantPossibleCapture enPassantPossibleCapture) {
+        this.enPassantPossibleCapture = enPassantPossibleCapture;
     }
 
     public boolean isThreatened(Position position) {
@@ -425,16 +400,14 @@ public class Board {
     public void goForwardHistory() {
         if (this.moveIndex > 0) {
             this.moveIndex--;
-            this.makeMove(this.moveHistory.get(this.moveIndex), false);
+            this.makeMove(this.moveHistory.get(this.moveIndex));
         }
     }
 
     public void restoreHistory() {
-        this.chessAudioPlayer.setEnabled(false);
         while (this.moveIndex > 0) {
             this.goForwardHistory();
         }
-        this.chessAudioPlayer.setEnabled(true);
     }
 
     public boolean isShouldRender() {

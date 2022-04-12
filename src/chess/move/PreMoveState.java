@@ -1,5 +1,7 @@
 package chess.move;
 
+import chess.move.component.EnPassantPossibleCapture;
+
 public class PreMoveState {
     private final EnPassantPossibleCapture enPassantPossibleCapture;
     private final boolean hadPieceMove;

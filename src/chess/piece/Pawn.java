@@ -3,6 +3,9 @@ package chess.piece;
 import chess.Board;
 import chess.move.*;
 import chess.Position;
+import chess.move.component.Capture;
+import chess.move.component.EnPassantPossibleCapture;
+import chess.move.component.Promotion;
 import chess.player.Team;
 
 import java.awt.*;
@@ -59,8 +62,7 @@ public class Pawn extends Piece {
         nextPosition = this.position.add(0, 2 * this.moveDirection);
         if (this.position.getY() == this.doubleMoverow && nextPosition.isInBoard() && (pin == null || pin.isPossible(nextPosition)) && board.getPiece(this.position.add(0, this.moveDirection)) == null &&  board.getPiece(nextPosition) == null) {
             EnPassantPossibleCapture enPassantPossibleCapture = new EnPassantPossibleCapture(this.position.add(0, this.moveDirection), this);
-            Move move = new Move(this.position, nextPosition, this);
-            move.setEnPassantPossibleCapture(enPassantPossibleCapture);
+            Move move = new Move(this.position, nextPosition, this, enPassantPossibleCapture);
             moves.add(move);
         }
 
@@ -74,10 +76,10 @@ public class Pawn extends Piece {
                 if (nextPosition.getY() == this.promotionrow) {
                     moves.addAll(this.getPromotionMoves(nextPosition, board.getPiece(nextPosition)));
                 } else {
-                    moves.add(new Move(this.position, nextPosition, this, board.getPiece(nextPosition)));
+                    moves.add(new Move(this.position, nextPosition, this, new Capture(board.getPiece(nextPosition))));
                 }
             } else if (board.getEnPassantPossibleCapture() != null && board.getEnPassantPossibleCapture().getCapturePosition().equals(nextPosition)) {
-                moves.add(new Move(this.position, nextPosition, this, board.getEnPassantPossibleCapture().getCapturedPiece()));
+                moves.add(new Move(this.position, nextPosition, this, new Capture(board.getEnPassantPossibleCapture().getCapturedPiece())));
             }
         }
 
@@ -102,16 +104,20 @@ public class Pawn extends Piece {
         return threatenedPositions;
     }
 
-    private List<Move> getPromotionMoves(Position nextPosition, Piece captured) {
+    private List<Move> getPromotionMoves(Position nextPosition, Piece capture) {
         List<Move> moves = new ArrayList<>(4);
-        for (int i = 0; i < 4; i++) {
-            moves.add(new Move(this.position, nextPosition, this, captured));
-        }
 
-        moves.get(0).setPromotion(new Promotion(this, new Queen(this.team, this.position)));
-        moves.get(1).setPromotion(new Promotion(this, new Rook(this.team, this.position)));
-        moves.get(2).setPromotion(new Promotion(this, new Bishop(this.team, this.position)));
-        moves.get(3).setPromotion(new Promotion(this, new Knight(this.team, this.position)));
+        if (capture != null) {
+            moves.add(new Move(this.position, nextPosition, this, new Capture(capture), new Promotion(this, new Queen(this.team, this.position))));
+            moves.add(new Move(this.position, nextPosition, this, new Capture(capture), new Promotion(this, new Rook(this.team, this.position))));
+            moves.add(new Move(this.position, nextPosition, this, new Capture(capture), new Promotion(this, new Bishop(this.team, this.position))));
+            moves.add(new Move(this.position, nextPosition, this, new Capture(capture), new Promotion(this, new Knight(this.team, this.position))));
+        } else {
+            moves.add(new Move(this.position, nextPosition, this, new Promotion(this, new Queen(this.team, this.position))));
+            moves.add(new Move(this.position, nextPosition, this, new Promotion(this, new Rook(this.team, this.position))));
+            moves.add(new Move(this.position, nextPosition, this, new Promotion(this, new Bishop(this.team, this.position))));
+            moves.add(new Move(this.position, nextPosition, this, new Promotion(this, new Knight(this.team, this.position))));
+        }
 
         return moves;
     }

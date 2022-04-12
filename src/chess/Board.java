@@ -211,15 +211,20 @@ public class Board {
         }
 
         if (!this.checkSources.isEmpty()) {
-            Set<Position> resolvingPositions = new HashSet<>(this.checkSources.get(0).getResolvingPositions());
-            for (CheckSource checkSource : this.checkSources) {
-                resolvingPositions.retainAll(checkSource.getResolvingPositions());
+            Set<Position> resolvingPositions = new HashSet<>();;
+            if (this.checkSources.size() == 1) {
+                for (CheckSource checkSource : this.checkSources) {
+                    resolvingPositions = checkSource.getResolvingPositions();
+                }
             }
 
-            this.possibleMoves = this.possibleMoves
-                    .stream()
-                    .filter(move -> move.getPiece() instanceof King || resolvingPositions.contains(move.getEndPosition()))
-                    .collect(Collectors.toSet());
+            Set<Move> illegalMove = new HashSet<>();
+            for (Move possibleMove : this.possibleMoves) {
+                if (!(possibleMove.getPiece() instanceof King) && !resolvingPositions.contains(possibleMove.getEndPosition())) {
+                    illegalMove.add(possibleMove);
+                }
+            }
+            this.possibleMoves.removeAll(illegalMove);
         }
     }
 

@@ -262,6 +262,7 @@ public class Board {
 
 
         this.computePossibleMove();
+        this.askNextMove();
     }
 
     public Piece getPiece(int x, int y) {

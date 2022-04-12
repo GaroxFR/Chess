@@ -11,9 +11,11 @@ public class Computer extends Player{
 
     private boolean aborted = false;
     private final Map<Move, Float> evaluations = new HashMap<>();
+    private final float secondsToThink;
 
-    public Computer(Team team) {
+    public Computer(Team team, float secondsToThink) {
         super(team, "Ordinateur");
+        this.secondsToThink = secondsToThink;
     }
 
     public Move getNextMove() {
@@ -27,7 +29,7 @@ public class Computer extends Player{
         this.aborted = false;
         CompletableFuture.runAsync(() -> {
             try {
-                Thread.sleep(1500);
+                Thread.sleep((int) (this.secondsToThink * 1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

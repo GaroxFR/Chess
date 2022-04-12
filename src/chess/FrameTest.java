@@ -8,8 +8,8 @@ import chess.player.Team;
 public class FrameTest {
     public static void main (String[]args){
         Player[] players = {
-                new Human(Team.BLACK, "Joueur"),
-                new Human(Team.WHITE, "Joueur")
+                new Computer(Team.BLACK, 1.5f),
+                new Human(Team.WHITE, "Enzo")
         };
         Board board = new Board(players);
         //board.loadFEN("4R3/1k6/1p2P1p1/p7/4r3/1P1r4/1K6/2R5 w - - 0 0");

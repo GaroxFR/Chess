@@ -5,80 +5,85 @@ import chess.player.Team;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Comparator;
 
 public class CapturedPiecePanel extends JPanel {
-
 
     private Team team;
     private Board board;
     private Image fond;
+    private Image fond2;
+    private JLabel timer;
+    private JLabel playerName;
 
     public CapturedPiecePanel(Team team, Board plateau){
         this.team = team;
         this.board = plateau;
         this.fond = Toolkit.getDefaultToolkit().getImage("res/fond3.png");
+        this.fond2 = Toolkit.getDefaultToolkit().getImage("res/fondtest.png");
+
+
+        timer = new JLabel();
+        Font police = new Font("Arial",Font.BOLD,10);
+        timer.setFont(police);
+        timer.setText("Temps restant :");
+        timer.setBounds(2,20,128,40);
+
+        playerName = new JLabel();
+        playerName.setFont(police);
+        /*
+        if(team == Team.WHITE) {
+            playerName.setText();
+            timer.setText();
+        }else(team == Team.BLACK){
+            playerName.setText();
+            timer.setText();
+        }
+         */
+        playerName.setText("Player");
+        playerName.setBounds(2,0,128,40);
+
+        this.add(playerName);
+        this.add(timer);
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(this.fond,0,0,128,490, this);
+        g.drawImage(this.fond,0,75,128,415, this);
+        g.drawImage(this.fond2,0,0,128,75, this);
 
-        int iPawn = 24;
-        int jPawn = 16;
-        int iKnight = 24;
-        int jKnight = 64;
-        int iBishop = 24;
-        int jBishop = 112;
-        int iRook = 24;
-        int jRook = 160;
-        int iQueen = 24;
-        int jQueen = 208;
-
-        for (Piece captured : this.board.getCapturedPiece() ) {
+        int i = 8;
+        int j = 91;
+        this.board.getCapturedPiece().sort(Comparator.comparing(Piece::getValue, Comparator.naturalOrder())); //Trie dans l'ordre croissante
+        for (Piece captured : this.board.getCapturedPiece() ) { //parcours liste pions capturé
             if (captured.getTeam() != this.team) {
                 continue;
             }
-
+            if (i > 80){ // pas plus de 4 pions par lignes
+                j = j + 32;
+                i = 8;
+            }
             if(captured instanceof Pawn){
-                g.drawImage(captured.getImage(), iPawn, jPawn, 16, 16, null);
-                iPawn = iPawn + 16;
-                if(iPawn > 72){ //4 pions max par ligne
-                    iPawn=24;
-                    jPawn=jPawn+16;
-                }
+                g.drawImage(captured.getImage(), i, j, 24, 24, null);
+                i = i + 24;
             }
             if(captured instanceof Knight){
-                g.drawImage(captured.getImage(), iKnight, jKnight, 16, 16, null);
-                iKnight = iKnight + 16;
-                if(iKnight > 56){ //4 pions max par ligne
-                    iKnight=24;
-                    jKnight=jKnight+16;
-                }
+                g.drawImage(captured.getImage(), i, j, 24, 24, null);
+                i = i + 24;
             }
             if(captured instanceof Bishop){
-                g.drawImage(captured.getImage(), iBishop, jBishop, 16, 16, null);
-                iBishop = iBishop + 16;
-                if(iBishop > 56){ //4 pions max par ligne au cas ou pour la promotion
-                    iBishop=24;
-                    jBishop=jBishop+16;
-                }
+                g.drawImage(captured.getImage(), i, j, 24, 24, null);
+                i = i + 24;
             }
             if(captured instanceof Rook){
-                g.drawImage(captured.getImage(), iRook, jRook, 16, 16, null);
-                iRook = iRook + 16;
-                if(iRook > 56){ //4 pions max par ligne
-                    iRook=24;
-                    jBishop=jBishop+16;
-                }
+                g.drawImage(captured.getImage(), i, j, 24, 24, null);
+                i = i+ 24;
             }
             if(captured instanceof Queen){
-                g.drawImage(captured.getImage(), iQueen, jQueen, 16, 16, null);
-                iQueen = iQueen + 16;
-                if(iQueen > 56){ //4 pions max par ligne
-                    iQueen=24;
-                    jQueen=jQueen+16;
-                }
+                g.drawImage(captured.getImage(), i, j, 24, 24, null);
+                i = i + 24;
             }
+            timer.setText("Temps restant : ");
         }
     }
 }

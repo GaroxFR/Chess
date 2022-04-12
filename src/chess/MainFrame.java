@@ -64,11 +64,11 @@ public class MainFrame extends JFrame implements ActionListener {
 
         leftBloc = new CapturedPiecePanel(Team.WHITE, plateau);
         leftBloc.setLayout(null);
-        leftBloc.setBounds(0, 216, 128, 490);
+        leftBloc.setBounds(0, 195, 128, 490);
 
         rightBloc = new CapturedPiecePanel(Team.BLACK, plateau);
         rightBloc.setLayout(null);
-        rightBloc.setBounds(658, 216, 128, 490);
+        rightBloc.setBounds(658, 195, 128, 490);
 
         Timer repaintTimer = new Timer(10, e -> {
             if (plateau.isShouldRender()) {

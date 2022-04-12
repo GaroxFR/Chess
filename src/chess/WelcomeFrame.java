@@ -31,7 +31,7 @@ public class WelcomeFrame extends JFrame {
     private JLabel backLabel;
 
     public WelcomeFrame() {
-        setLocation(1000, 300);
+        setLocation(290, 10);
         setSize(width, height);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -85,14 +85,14 @@ public class WelcomeFrame extends JFrame {
         mainBloc.add(namePlayer2);
 
         aNamePlayer = new JTextField("nom joueur");
-        aNamePlayer.setBounds(293, 546, 150, 20);
+        aNamePlayer.setBounds(293, 546, 100, 20);
         mainBloc.add(aNamePlayer);
 
         aIa = new JPanel();
         String[] level = {"débutant","moyen","expert"};
         JComboBox<String> l = new JComboBox<String>(level);
         l.setVisible(true);
-        aIa.setBounds(293, 566, 150, 30);
+        aIa.setBounds(293, 566, 100, 30);
         aIa.add(l);
         mainBloc.add(aIa);
 
@@ -113,14 +113,15 @@ public class WelcomeFrame extends JFrame {
         mainBloc.add(buttonPlayer2);
 
         chrono = new JLabel("chronomètre : ");
-        chrono.setBounds(270, 756, 150, 20);
+
+        chrono.setBounds(270, 740, 150, 20);
         mainBloc.add(chrono);
 
         selectChrono = new JPanel();
         String[] choices = { "30 min","20 min","10 min"};
         JComboBox<String> c = new JComboBox<String>(choices);
         c.setVisible(true);
-        selectChrono.setBounds(393, 756, 100, 30);
+        selectChrono.setBounds(393, 740, 100, 30);
         selectChrono.add(c);
         mainBloc.add(selectChrono);
 

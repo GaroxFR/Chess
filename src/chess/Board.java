@@ -417,4 +417,12 @@ public class Board {
     public Board cloneComputationalBoard() {
         return new Board(this.pieces, this.enPassantPossibleCapture, this.toPlay);
     }
+
+    public Team getToPlay() {
+        return this.toPlay;
+    }
+
+    public Player[] getPlayers() {
+        return this.players;
+    }
 }

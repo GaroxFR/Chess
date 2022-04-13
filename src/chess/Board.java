@@ -86,6 +86,7 @@ public class Board {
     public void makeMove(Move move) {
         move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved()));
         move.getPiece().setMoved(true);
+        this.enPassantPossibleCapture = null;
 
         move.apply(this);
 

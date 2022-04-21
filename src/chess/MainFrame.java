@@ -62,11 +62,11 @@ public class MainFrame extends JFrame implements ActionListener {
         backgroundLabel.setBounds(0,0,this.width,96);
         topBloc.add(backgroundLabel);
 
-        leftBloc = new CapturedPiecePanel(Team.WHITE, plateau);
+        leftBloc = new CapturedPiecePanel(Team.BLACK, plateau, this);
         leftBloc.setLayout(null);
         leftBloc.setBounds(0, 195, 128, 490);
 
-        rightBloc = new CapturedPiecePanel(Team.BLACK, plateau);
+        rightBloc = new CapturedPiecePanel(Team.WHITE, plateau, this);
         rightBloc.setLayout(null);
         rightBloc.setBounds(658, 195, 128, 490);
 
@@ -113,8 +113,9 @@ public class MainFrame extends JFrame implements ActionListener {
                 minB--;
             }
         }
-        timeDisplayW = String.format("temps restant %02d : %02d",minW, secW);
-        timeDisplayB = String.format("temps restant %02d : %02d",minB, secB);
+        timeDisplayW = ("temps restant : "+minW+":"+secW);
+        timeDisplayB = ("temps restant : "+minB+":"+secB);
+        System.out.println("je suis dedans");
     }
 
     public String getPlayerW() {

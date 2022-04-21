@@ -15,33 +15,32 @@ public class CapturedPiecePanel extends JPanel {
     private Image fond2;
     private JLabel timer;
     private JLabel playerName;
+    private MainFrame a;
 
-    public CapturedPiecePanel(Team team, Board plateau){
+    public CapturedPiecePanel(Team team, Board plateau, MainFrame mainFrame){
         this.team = team;
         this.board = plateau;
         this.fond = Toolkit.getDefaultToolkit().getImage("res/fond3.png");
         this.fond2 = Toolkit.getDefaultToolkit().getImage("res/fondtest.png");
+        this.a = mainFrame;
 
 
         timer = new JLabel();
         Font police = new Font("Arial",Font.BOLD,10);
         timer.setFont(police);
-        timer.setText("Temps restant :");
-        timer.setBounds(2,20,128,40);
 
         playerName = new JLabel();
         playerName.setFont(police);
-        /*
+
         if(team == Team.WHITE) {
-            playerName.setText();
-            timer.setText();
-        }else(team == Team.BLACK){
-            playerName.setText();
-            timer.setText();
+            playerName.setText(a.getPlayerW());
+            timer.setText(a.getTimeDisplayW());
+        }else if(team == Team.BLACK){
+            playerName.setText(a.getPlayerB());
+            timer.setText(a.getTimeDisplayB());
         }
-         */
-        playerName.setText("Player");
         playerName.setBounds(2,0,128,40);
+        timer.setBounds(2,20,128,40);
 
         this.add(playerName);
         this.add(timer);
@@ -51,6 +50,11 @@ public class CapturedPiecePanel extends JPanel {
         super.paintComponent(g);
         g.drawImage(this.fond,0,75,128,415, this);
         g.drawImage(this.fond2,0,0,128,75, this);
+        if(team == Team.WHITE) {
+            timer.setText(a.getTimeDisplayW());
+        }else if(team == Team.BLACK){
+            timer.setText(a.getTimeDisplayB());
+        }
 
         int i = 8;
         int j = 91;
@@ -83,7 +87,6 @@ public class CapturedPiecePanel extends JPanel {
                 g.drawImage(captured.getImage(), i, j, 24, 24, null);
                 i = i + 24;
             }
-            timer.setText("Temps restant : ");
         }
     }
 }

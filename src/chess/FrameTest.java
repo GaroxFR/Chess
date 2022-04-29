@@ -9,6 +9,7 @@ public class FrameTest {
     public static void main (String[]args){
         WelcomeFrame test1 = new WelcomeFrame();
 
+        //Inutile - on garde pour l'instant pour des tests futurs
         /*Player[] players = {
                 new Computer(Team.BLACK, 1.5f),
                 new Human(Team.WHITE, "Enzo")

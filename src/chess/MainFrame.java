@@ -81,7 +81,7 @@ public class MainFrame extends JFrame implements ActionListener {
         mainBloc = new JPanel();
         mainBloc.setLayout(null);
         mainBloc.setBounds(0,0,this.width, this.height);
-        mainBloc.setBackground(Color.CYAN);
+        mainBloc.setBackground(new Color(23,82,41));
 
         mainBloc.add(game);
         mainBloc.add(topBloc);

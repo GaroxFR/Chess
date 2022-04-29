@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
 
 public class WelcomeFrame extends JFrame implements ActionListener {
 
-    private Player[] players;
+    private Player[] players = new Player[2];
     private String[] choices = { "10 min","20 min","30 min"};
     private JComboBox<String> c = new JComboBox<String>(choices);
     private int temps;
@@ -158,13 +158,18 @@ public class WelcomeFrame extends JFrame implements ActionListener {
                 temps = 10 + i*10;
             }
         }
-        if(e.getSource() == buttonPlayer2){
+        if(e.getSource() == buttonPlayer){
             players[0] = new Human(Team.WHITE, aNamePlayer.getText());
-            players[1] = new Computer(Team.BLACK, 3);//pour la difficulte : aIa.getSelectedItem()
+            players[1] = new Computer(Team.BLACK, 1.5f);//pour la difficulte : aIa.getSelectedItem()
         }else if(e.getSource() == buttonPlayer2){
             players[0] = new Human(Team.WHITE, aNamePlayer1.getText());
             players[1] = new Human(Team.BLACK, aNamePlayer2.getText());
         }
+        Board board = new Board(this.players);
+        //board.loadFEN("4R3/1k6/1p2P1p1/p7/4r3/1P1r4/1K6/2R5 w - - 0 0");
+        board.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
+        //board.loadFEN("8/8/8/p7/1P/8/8/8 w");
+        MainFrame test = new MainFrame(board, temps);
     }
 
     public Player[] getPlayers() {

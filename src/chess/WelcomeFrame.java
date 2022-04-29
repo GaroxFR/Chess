@@ -1,9 +1,22 @@
 package chess;
 
+import chess.player.Team;
+import chess.player.Player;
+import chess.player.Human;
+import chess.player.Computer;
+
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class WelcomeFrame extends JFrame {
+public class WelcomeFrame extends JFrame implements ActionListener {
+
+    private Player[] players;
+    private String[] choices = { "10 min","20 min","30 min"};
+    private JComboBox<String> c = new JComboBox<String>(choices);
+    private int temps;
 
     final int width = 786;
     final int height = 786;
@@ -107,10 +120,12 @@ public class WelcomeFrame extends JFrame {
         buttonPlayer = new JButton("JOUER SEUL");
         buttonPlayer.setBounds(97, 626, 200, 90);
         mainBloc.add(buttonPlayer);
+        buttonPlayer.addActionListener(this);
 
         buttonPlayer2 = new JButton("JOUER A DEUX");
         buttonPlayer2.setBounds(489, 626, 200, 90);
         mainBloc.add(buttonPlayer2);
+        buttonPlayer2.addActionListener(this);
 
         chrono = new JLabel("chronomètre : ");
 
@@ -118,8 +133,8 @@ public class WelcomeFrame extends JFrame {
         mainBloc.add(chrono);
 
         selectChrono = new JPanel();
-        String[] choices = { "30 min","20 min","10 min"};
-        JComboBox<String> c = new JComboBox<String>(choices);
+        //choices = { "10 min","20 min","30 min"};
+        //JComboBox<String> c = new JComboBox<String>(choices);
         c.setVisible(true);
         selectChrono.setBounds(393, 740, 100, 30);
         selectChrono.add(c);
@@ -136,9 +151,32 @@ public class WelcomeFrame extends JFrame {
         this.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        WelcomeFrame f = new WelcomeFrame();
+    public void actionPerformed(ActionEvent e){
+        for(int i=0; i<choices.length; i++){
+            //if(selectChrono.getSelectedItem()==choices[i]){
+            if(c.getSelectedItem()==choices[i]){
+                temps = 10 + i*10;
+            }
+        }
+        if(e.getSource() == buttonPlayer2){
+            players[0] = new Human(Team.WHITE, aNamePlayer.getText());
+            players[1] = new Computer(Team.BLACK, 3);//pour la difficulte : aIa.getSelectedItem()
+        }else if(e.getSource() == buttonPlayer2){
+            players[0] = new Human(Team.WHITE, aNamePlayer1.getText());
+            players[1] = new Human(Team.BLACK, aNamePlayer2.getText());
+        }
     }
+
+    public Player[] getPlayers() {
+        return this.players;
+    }
+
+    public int getTemps() {
+        return this.temps;
+    }
+
+
+
 
 }
 

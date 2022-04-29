@@ -40,8 +40,8 @@ public class MainFrame extends JFrame implements ActionListener {
         this.plateau = plateau;
         minW=timeMax; minB=timeMax; secW=0; secB = 0;
         //Renseigne le nom des joueurs
-        playerB = plateau.getPlayers()[0].getName();
-        playerW = plateau.getPlayers()[1].getName();
+        playerW = plateau.getPlayers()[0].getName();
+        playerB = plateau.getPlayers()[1].getName();
 
 
         setLocation(290, 10);
@@ -62,11 +62,11 @@ public class MainFrame extends JFrame implements ActionListener {
         backgroundLabel.setBounds(0,0,this.width,96);
         topBloc.add(backgroundLabel);
 
-        leftBloc = new CapturedPiecePanel(Team.BLACK, plateau, this);
+        leftBloc = new CapturedPiecePanel(Team.WHITE, plateau, this);
         leftBloc.setLayout(null);
         leftBloc.setBounds(0, 195, 128, 490);
 
-        rightBloc = new CapturedPiecePanel(Team.WHITE, plateau, this);
+        rightBloc = new CapturedPiecePanel(Team.BLACK, plateau, this);
         rightBloc.setLayout(null);
         rightBloc.setBounds(658, 195, 128, 490);
 

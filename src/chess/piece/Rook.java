@@ -46,7 +46,7 @@ public class Rook extends SlidingPiece {
 
     @Override
     public int getValue() {
-        return 5;
+        return 500;
     }
 
     @Override

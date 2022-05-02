@@ -132,7 +132,7 @@ public class Pawn extends Piece {
 
     @Override
     public int getValue() {
-        return 1;
+        return 100;
     }
 
     @Override

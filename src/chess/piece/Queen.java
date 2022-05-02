@@ -51,7 +51,7 @@ public class Queen extends SlidingPiece {
 
     @Override
     public int getValue() {
-        return 9;
+        return 900;
     }
 
     @Override

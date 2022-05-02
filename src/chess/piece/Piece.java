@@ -61,6 +61,7 @@ public abstract class Piece {
 
     public abstract int getValue();
 
+
     @Override
     public abstract Piece clone();
 }

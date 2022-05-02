@@ -22,6 +22,8 @@ public class Board {
     private final Set<Position> threatenedPositions = new HashSet<>();
     private final List<PiecePin> pins = new LinkedList<>();
     private final List<CheckSource> checkSources = new LinkedList<>();
+    private HashMap<Long, Integer> positionMap = new HashMap<>();
+    private long currentHash = 0;
     private Team toPlay = Team.WHITE;
 
     private Piece selectedPiece = null;
@@ -47,7 +49,7 @@ public class Board {
         }
     }
 
-    public Board(Piece[][] pieces, EnPassantPossibleCapture enPassantPossibleCapture, Team toPlay) {
+    public Board(Piece[][] pieces, EnPassantPossibleCapture enPassantPossibleCapture, Team toPlay, HashMap<Long, Integer> positionMap) {
         this.chessAudioPlayer.setEnabled(false);
         this.enPassantPossibleCapture = enPassantPossibleCapture;
         this.toPlay = toPlay;
@@ -58,6 +60,7 @@ public class Board {
                 }
             }
         }
+        this.positionMap = (HashMap<Long, Integer>) positionMap.clone();
     }
 
     public void playMove(Move move) {
@@ -84,13 +87,15 @@ public class Board {
     }
 
     public void makeMove(Move move) {
-        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved()));
+        move.setPreMoveState(new PreMoveState(this.enPassantPossibleCapture, move.getPiece().hasMoved(), this.currentHash));
         move.getPiece().setMoved(true);
         this.enPassantPossibleCapture = null;
 
         move.apply(this);
 
         this.switchTurn();
+        this.currentHash = ZobristHash.compute(this.pieces, this.toPlay);
+        this.positionMap.compute(currentHash, (key, value) -> value == null ? 1 : value + 1);
     }
 
     public void unmakeMove(Move move) {
@@ -100,6 +105,9 @@ public class Board {
         move.revert(this);
 
         this.switchTurn();
+
+        this.positionMap.compute(currentHash, (key, value) -> value == null ? 1 : value - 1);
+        this.currentHash = move.getPreMoveState().getPositionHash();
     }
     private void askNextMove() {
         if (this.players[this.toPlay.getIndex()] instanceof Computer) {
@@ -125,20 +133,33 @@ public class Board {
     }
 
     public float evaluate() {
-        float evaluation = 0;
+        float friendlyPiecesValue = 0;
+        float opponentPiecesValue = 0;
+        Piece friendlyKing = null;
+        Piece opponentKing = null;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Piece piece = this.getPiece(x, y);
                 if (piece != null && piece.isAlive()) {
                     if (piece.getTeam() == this.toPlay) {
-                        evaluation += piece.getValue();
+                        friendlyPiecesValue += piece.getValue();
+                        if (piece instanceof King) {
+                            friendlyKing = piece;
+                        }
                     } else {
-                        evaluation-= piece.getValue();
+                        opponentPiecesValue += piece.getValue();
+                        if (piece instanceof King) {
+                            opponentKing = piece;
+                        }
                     }
                 }
             }
         }
-        return evaluation;
+
+        int opponentKingDistToCenter = opponentKing.getPosition().add(-3, -3).simpleNorm();
+        int friendlyKingDistToOpponentKing = 14 - opponentKing.getPosition().add(friendlyKing.getPosition().multiply(-1)).simpleNorm();
+        float forceKingToCornerEval = (opponentKingDistToCenter  + friendlyKingDistToOpponentKing*5)  * (4000 - opponentPiecesValue) / 4000.0f;
+        return friendlyPiecesValue - opponentPiecesValue + forceKingToCornerEval;
     }
 
     public int countPossibleMoves(int depth) {
@@ -417,7 +438,7 @@ public class Board {
     }
 
     public Board cloneComputationalBoard() {
-        return new Board(this.pieces, this.enPassantPossibleCapture, this.toPlay);
+        return new Board(this.pieces, this.enPassantPossibleCapture, this.toPlay, this.positionMap);
     }
 
     public Team getToPlay() {
@@ -427,4 +448,9 @@ public class Board {
     public Player[] getPlayers() {
         return this.players;
     }
+
+    public boolean isDraw() {
+        return this.positionMap.getOrDefault(this.currentHash, 0) >= 3;
+    }
+
 }

@@ -94,7 +94,7 @@ public class Knight extends Piece {
 
     @Override
     public int getValue() {
-        return 3;
+        return 300;
     }
 
     @Override

@@ -30,6 +30,7 @@ public class WelcomeFrame extends JFrame implements ActionListener {
     private JLabel namePlayer2;
     private JTextField aNamePlayer;
     private JPanel aIa;
+    private JComboBox<String> levelComboBox;
     private JTextField aNamePlayer1;
     private JTextField aNamePlayer2;
     private JButton buttonPlayer;
@@ -103,10 +104,10 @@ public class WelcomeFrame extends JFrame implements ActionListener {
 
         aIa = new JPanel();
         String[] level = {"débutant","moyen","expert"};
-        JComboBox<String> l = new JComboBox<String>(level);
-        l.setVisible(true);
+        levelComboBox = new JComboBox<String>(level);
+        levelComboBox.setVisible(true);
         aIa.setBounds(293, 566, 100, 30);
-        aIa.add(l);
+        aIa.add(levelComboBox);
         mainBloc.add(aIa);
 
         aNamePlayer1 = new JTextField("nom premier joueur");
@@ -160,7 +161,7 @@ public class WelcomeFrame extends JFrame implements ActionListener {
         }
         if(e.getSource() == buttonPlayer){
             players[0] = new Human(Team.WHITE, aNamePlayer.getText());
-            players[1] = new Computer(Team.BLACK, 1.5f);//pour la difficulte : aIa.getSelectedItem()
+            players[1] = new Computer(Team.BLACK, (levelComboBox.getSelectedIndex() + 1) * 2f);//pour la difficulte : aIa.getSelectedItem()
         }else if(e.getSource() == buttonPlayer2){
             players[0] = new Human(Team.WHITE, aNamePlayer1.getText());
             players[1] = new Human(Team.BLACK, aNamePlayer2.getText());
@@ -180,9 +181,6 @@ public class WelcomeFrame extends JFrame implements ActionListener {
     public int getTemps() {
         return this.temps;
     }
-
-
-
 
 }
 

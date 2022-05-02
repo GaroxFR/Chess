@@ -61,7 +61,7 @@ public abstract class SlidingPiece extends Piece {
                     break;
                 }
 
-                if (board.getPiece(nextPosition) != null && !(board.getPiece(nextPosition) instanceof King)) {
+                if (board.getPiece(nextPosition) != null && !(board.getPiece(nextPosition) instanceof King && board.getPiece(nextPosition).getTeam() != this.team)) {
                     threatenedPositions.add(nextPosition);
                     break;
                 }

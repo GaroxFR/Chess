@@ -113,9 +113,8 @@ public class MainFrame extends JFrame implements ActionListener {
                 minB--;
             }
         }
-        timeDisplayW = ("temps restant : "+minW+":"+secW);
-        timeDisplayB = ("temps restant : "+minB+":"+secB);
-        System.out.println("je suis dedans");
+        timeDisplayW = String.format("temps restant : %02d:%02d", minW, secW);
+        timeDisplayB = String.format("temps restant : %02d:%02d", minB, secB);
     }
 
     public String getPlayerW() {

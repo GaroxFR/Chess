@@ -19,8 +19,6 @@ public class Computer extends Player{
     }
 
     public Move getNextMove() {
-        this.board.getAudioPlayer().setEnabled(false);
-
         Board computationalBoard = this.board.cloneComputationalBoard();
 
         List<Move> finalMoves = new ArrayList<>();
@@ -41,15 +39,18 @@ public class Computer extends Player{
             this.evaluations.clear();
             computationalBoard.computePossibleMove();
             List<Move> moves = computationalBoard.getPossibleMoves();
-            this.evaluate(depth, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, computationalBoard, true);
+            this.evaluate(2*depth, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, computationalBoard, true);
             moves.sort(Comparator.comparing(move -> this.evaluations.getOrDefault(move, Float.NEGATIVE_INFINITY) , Comparator.reverseOrder()));
             if (!this.aborted) {
                 finalMoves = new ArrayList<>(moves);
-
+                if (this.evaluations.get(finalMoves.get(0)) == Float.POSITIVE_INFINITY) {
+                    return finalMoves.get(0);
+                }
             }
 
+
         }
-        System.out.println(depth-1);
+        System.out.println(2*depth-2);
         this.board.getAudioPlayer().setEnabled(true);
         return finalMoves.get(0);
     }
@@ -58,6 +59,11 @@ public class Computer extends Player{
         if (this.aborted) {
             return 0;
         }
+
+        if (computationalBoard.isDraw() && !storeEvaluation) {
+            return 0;
+        }
+
         if (depth == 0) {
             return this.evaluateOnlyCaptures(100, alpha, beta, computationalBoard);
         }
@@ -77,7 +83,7 @@ public class Computer extends Player{
             computationalBoard.makeMove(childMove);
             float evaluation = -this.evaluate(depth - 1, -beta, -alpha, computationalBoard, false);
             computationalBoard.unmakeMove(childMove);
-            if (storeEvaluation) {
+            if (storeEvaluation && !this.aborted) {
                 this.evaluations.put(childMove, evaluation);
             }
             if (evaluation >= beta) {
@@ -89,6 +95,10 @@ public class Computer extends Player{
     }
 
     public float evaluateOnlyCaptures(int limit, float alpha, float beta, Board computationalBoard) {
+        if (computationalBoard.isDraw()) {
+            return 0;
+        }
+
         float evaluation = computationalBoard.evaluate();
         if (evaluation >= beta) {
             return beta;

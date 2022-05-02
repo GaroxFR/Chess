@@ -98,14 +98,14 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
-        if(plateau.getToPlay() == Team.WHITE){
+        if(plateau.getTimerTurn() == Team.WHITE){
             if(secW>0){
                 secW--;
             }else{
                 secW=59;
                 minW--;
             }
-        }else if(plateau.getToPlay() == Team.BLACK){
+        }else {
             if(secB>0){
                 secB--;
             }else{

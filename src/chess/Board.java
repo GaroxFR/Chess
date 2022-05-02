@@ -25,6 +25,7 @@ public class Board {
     private HashMap<Long, Integer> positionMap = new HashMap<>();
     private long currentHash = 0;
     private Team toPlay = Team.WHITE;
+    private Team timerTurn = Team.WHITE;
 
     private Piece selectedPiece = null;
     private EnPassantPossibleCapture enPassantPossibleCapture = null;
@@ -75,15 +76,7 @@ public class Board {
         this.makeMove(move);
 
         this.moveHistory.add(0, move);
-    }
-
-    public void unplayMove(Move move) {
-        Capture capture = move.getMoveComponent(Capture.class);
-        if (capture != null) {
-            this.capturedPiece.remove(capture.getCapturedPiece());
-        }
-
-        this.unmakeMove(move);
+        this.switchTimerTurn();
     }
 
     public void makeMove(Move move) {
@@ -129,6 +122,14 @@ public class Board {
             this.toPlay = Team.BLACK;
         } else {
             this.toPlay = Team.WHITE;
+        }
+    }
+
+    public void switchTimerTurn() {
+        if (this.timerTurn == Team.WHITE) {
+            this.timerTurn = Team.BLACK;
+        } else {
+            this.timerTurn = Team.WHITE;
         }
     }
 
@@ -258,8 +259,10 @@ public class Board {
 
         if (splitted[1].charAt(0) == 'w') {
             this.toPlay = Team.WHITE;
+            this.timerTurn = Team.WHITE;
         } else {
             this.toPlay = Team.BLACK;
+            this.timerTurn = Team.BLACK;
         }
 
         for(char c : splitted[2].toCharArray()) {
@@ -453,4 +456,7 @@ public class Board {
         return this.positionMap.getOrDefault(this.currentHash, 0) >= 3;
     }
 
+    public Team getTimerTurn() {
+        return this.timerTurn;
+    }
 }

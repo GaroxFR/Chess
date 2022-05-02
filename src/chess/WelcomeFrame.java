@@ -82,23 +82,23 @@ public class WelcomeFrame extends JFrame implements ActionListener {
         player2.setFont(new Font("Serif", Font.BOLD, 35));
         mainBloc.add(player2);
 
-        namePlayer = new JLabel("nom joueur : ");
+        namePlayer = new JLabel("Nom joueur : ");
         namePlayer.setBounds(93, 546, 100, 20);
         mainBloc.add(namePlayer);
 
-        ia = new JLabel("niveau de l'IA : ");
+        ia = new JLabel("Niveau de l'IA : ");
         ia.setBounds(93, 566, 150, 20);
         mainBloc.add(ia);
 
-        namePlayer1 = new JLabel("nom joueur 1 : ");
+        namePlayer1 = new JLabel("Nom joueur 1 : ");
         namePlayer1.setBounds(445, 546, 150, 20);
         mainBloc.add(namePlayer1);
 
-        namePlayer2 = new JLabel("nom joueur 2 : ");
+        namePlayer2 = new JLabel("Nom joueur 2 : ");
         namePlayer2.setBounds(445, 566, 150, 20);
         mainBloc.add(namePlayer2);
 
-        aNamePlayer = new JTextField("nom joueur");
+        aNamePlayer = new JTextField("");
         aNamePlayer.setBounds(293, 546, 100, 20);
         mainBloc.add(aNamePlayer);
 
@@ -110,11 +110,11 @@ public class WelcomeFrame extends JFrame implements ActionListener {
         aIa.add(levelComboBox);
         mainBloc.add(aIa);
 
-        aNamePlayer1 = new JTextField("nom premier joueur");
+        aNamePlayer1 = new JTextField("");
         aNamePlayer1.setBounds(593, 546, 150, 20);
         mainBloc.add(aNamePlayer1);
 
-        aNamePlayer2 = new JTextField("nom deuxième joueur");
+        aNamePlayer2 = new JTextField("");
         aNamePlayer2.setBounds(593, 566, 150, 20);
         mainBloc.add(aNamePlayer2);
 
@@ -129,15 +129,14 @@ public class WelcomeFrame extends JFrame implements ActionListener {
         buttonPlayer2.addActionListener(this);
 
         chrono = new JLabel("chronomètre : ");
-
-        chrono.setBounds(270, 740, 150, 20);
+        chrono.setBounds(280, 400, 150, 20);
         mainBloc.add(chrono);
 
         selectChrono = new JPanel();
         //choices = { "10 min","20 min","30 min"};
         //JComboBox<String> c = new JComboBox<String>(choices);
         c.setVisible(true);
-        selectChrono.setBounds(393, 740, 100, 30);
+        selectChrono.setBounds(393, 400, 100, 30);
         selectChrono.add(c);
         mainBloc.add(selectChrono);
 

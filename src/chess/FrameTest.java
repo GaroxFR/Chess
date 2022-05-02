@@ -19,6 +19,6 @@ public class FrameTest {
         //board.loadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq");
         board.loadFEN("8/1p2p2p/8/3k4/8/8/2P2P1P/6K1 b - - 0 1");
         //board.loadFEN("8/8/8/p7/1P/8/8/8 w");
-        MainFrame test = new MainFrame(board, 10);
+        GameFrame test = new GameFrame(board, 10);
     }
 }

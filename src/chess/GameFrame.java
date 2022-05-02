@@ -1,14 +1,13 @@
 package chess;
 
 import chess.player.Team;
-import chess.test.TestFrame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MainFrame extends JFrame implements ActionListener {
+public class GameFrame extends JFrame implements ActionListener {
 
     final int width = 800;
     final int height = 786;
@@ -34,7 +33,7 @@ public class MainFrame extends JFrame implements ActionListener {
     private JLabel leftLabel;
     private JLabel rightLabel;
 
-    public MainFrame (Board plateau ,int timeMax) {
+    public GameFrame(Board plateau , int timeMax) {
 
         this.timeMax = timeMax;
         this.plateau = plateau;

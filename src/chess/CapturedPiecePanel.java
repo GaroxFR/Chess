@@ -15,14 +15,14 @@ public class CapturedPiecePanel extends JPanel {
     private Image fond2;
     private JLabel timer;
     private JLabel playerName;
-    private MainFrame a;
+    private GameFrame a;
 
-    public CapturedPiecePanel(Team team, Board plateau, MainFrame mainFrame){
+    public CapturedPiecePanel(Team team, Board plateau, GameFrame gameFrame){
         this.team = team;
         this.board = plateau;
         this.fond = Toolkit.getDefaultToolkit().getImage("res/fond3.png");
         this.fond2 = Toolkit.getDefaultToolkit().getImage("res/fondtest.png");
-        this.a = mainFrame;
+        this.a = gameFrame;
 
 
         timer = new JLabel();

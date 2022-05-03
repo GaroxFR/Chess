@@ -10,8 +10,8 @@ public interface MoveComponent {
     void apply(Board board);
 
     /**
-     * Méthode appelée après que le coup soit joué. Ceci est seulement important pour la promotion qui doit absolument
-     * être pris en compte après le déplacement et du pion.
+     * Méthode appelée après que le coup ai été joué. Ceci est seulement important pour la promotion, qui doit absolument
+     * être prise en compte après le déplacement du pion.
      */
     default void applyPostMove(Board board) {
     }

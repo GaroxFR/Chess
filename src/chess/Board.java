@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Classe la plus importante du projet. Elle représente le plateau de jeu et beaucoup d'information sur le déroulement de la partie.
+ * Classe la plus importante du projet. Elle représente le plateau de jeu et beaucoup d'informations sur le déroulement de la partie.
  */
 public class Board {
 
@@ -28,7 +28,7 @@ public class Board {
     private final List<PiecePin> pins = new LinkedList<>();
     private final List<CheckSource> checkSources = new LinkedList<>();
 
-    private HashMap<Long, Integer> positionMap = new HashMap<>();             // Map des position déjà atteintes utilisées pour l'égalité par répétition
+    private HashMap<Long, Integer> positionMap = new HashMap<>();             // Map des positions déjà atteintes, utilisées pour l'égalité par répétition
     private long currentHash = 0;
     private Team toPlay = Team.WHITE;                                         // Joueur qui doit jouer dans la position affichée
     private Team timerTurn = Team.WHITE;                                      // Joueur qui doit réellement jouer (différent de toPlay puisqu'on peut revenir en arrière dans les positions visuellement)
@@ -58,7 +58,7 @@ public class Board {
     }
 
     /**
-     * Constructeur utilisé pour créer une copie du plateau utilisée pour les calculs de l'ordinateur
+     * Constructeur utilisé pour créer une copie du plateau, utile pour les calculs de l'ordinateur
      */
     public Board(Piece[][] pieces, EnPassantPossibleCapture enPassantPossibleCapture, Team toPlay, HashMap<Long, Integer> positionMap) {
         this.chessAudioPlayer.setEnabled(false);
@@ -192,8 +192,8 @@ public class Board {
     }
 
     /**
-     * Compte le nombre de positions possible après un nombre d'un coup donné. Cette fonction était utilisée pour tester la génération et vérifier par rapport aux conventions
-     * déjà établi
+     * Compte le nombre de positions possibles après un nombre de coups donné. Cette fonction était utilisée pour tester la génération et vérifier par rapport aux conventions
+     * déjà établies
      */
     public int countPossibleMoves(int depth) {
         if (depth == 0) {
@@ -213,7 +213,7 @@ public class Board {
     }
 
     /**
-     * Méthode centrale mettant à jour a liste des coups possibles par rapport à la position actuelle
+     * Méthode centrale mettant à jour la liste des coups possibles par rapport à la position actuelle
      */
     public void computePossibleMove() {
         this.possibleMoves.clear();
@@ -261,7 +261,7 @@ public class Board {
     }
 
     /**
-     * Charge une position à partir de la position à partir d'une chaine de caractère
+     * Charge une position à partir de la position définie comme une chaine de caractères
      */
     public void loadFEN(String fen) {
         int x = 0;
@@ -360,7 +360,7 @@ public class Board {
     }
 
     /**
-     * Méthode appelée quand le joueur enfonce la clique de la souris
+     * Méthode appelée quand le joueur enfonce le clic de la souris
      */
     public void onPressed(int x, int y) {
         if (this.waitingForPromotion || !(this.players[this.toPlay.getIndex()] instanceof Human)) {
@@ -380,8 +380,8 @@ public class Board {
     }
 
     /**
-     * Méthode appelée lorsque le joueur relache le clique de la souris
-     * @return un PromotionPanel si jamais le joueur doit maintenant choisir une Promotion
+     * Méthode appelée lorsque le joueur relâche le clic de la souris
+     * @return un PromotionPanel si jamais le joueur doit choisir une Promotion
      */
     public Optional<PromotionPanel> onRelease(int x, int y) {
         if (this.selectedPiece != null) {

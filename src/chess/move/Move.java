@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  * Représente un coup.
- * Un coup est composé de la pièce qui bouge, la position de départ, la position d'arrivée ainsi qu'un tableau
+ * Un coup est composé de la pièce qui bouge, de la position de départ, de la position d'arrivée ainsi que d'un tableau
  * contenant des informations complémentaires pour les coups plus spéciaux (captures, roques...)
  *
  * Cette classe ne possède aucun setter, elle est immutable. C'est-à-dire qu'elle ne peut pas être modifiée. Ceci permet d'éviter beaucoup de bugs
@@ -94,7 +94,7 @@ public class Move {
 
     /**
      * Méthode un peu technique permettant de récupérer le MoveComponent correspondant au type clazz.
-     * Example : Promotion p = move.getMoveComponent(Promotion.class)
+     * Exemple : Promotion p = move.getMoveComponent(Promotion.class)
      */
     public <T extends MoveComponent> T getMoveComponent(Class<T> clazz) {
         for (MoveComponent moveComponent : this.moveComponents) {

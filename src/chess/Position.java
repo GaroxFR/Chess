@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * Cette classe ne possède aucun setter, elle est immutable. C'est-à-dire qu'elle ne peut pas être modifiée. Ceci permet d'éviter beaucoup de bugs
  * liés au passage des références dans de multiples méthodes.
- * Lors d'opérations sur les positions, une nouvelle position est renvoyée mais aucune n'est modifiée
+ * Lors d'opérations sur les positions, une nouvelle position est renvoyée mais aucune n'est modifiée.
  */
 public class Position {
     private final int x;

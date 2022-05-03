@@ -52,13 +52,6 @@ public class King extends Piece{
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();
 
-        //détecter l'échec et mat : si la position finale de la piece fait partie des coups possibles d'une piece de l'autre team
-        /*le roque :
-        nextPosition = ;
-        test de non occupation des cases entre la tour et le roi
-        test de non control des cases entre la tour et le roi
-        if(!played && la tour1 n'a pas encore été jouée && rook1.position)
-        */
 
         for (Position direction : King.DIRECTIONS) {
             Position nextPosition = this.position.add(direction);
@@ -71,7 +64,7 @@ public class King extends Piece{
             }
         }
 
-        if(!this.hasMoved()) {
+        if(!this.hasMoved()) {    //pour le roque
             for (int i : King.CORNERS_X) {
                 Piece piece = board.getPiece(i, this.firstrow);
                 if(piece instanceof Rook && !piece.hasMoved()) {

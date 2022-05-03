@@ -22,8 +22,8 @@ public class Computer extends Player{
      * Méthode utilisée afin de récupérer le coup de l'ordinateur.
      * L'ordinateur ayant une durée limitée pour réfléchir, il ne peut pas savoir à quelle profondeur il peut aller.
      * C'est pourquoi il lance d'abord une évaluation à la profondeur 2, puis 4, puis 6 etc
-     * Après chaque évaluation, il trie la liste de coup possible en fonction de leur évaluation.
-     * Ceci permet d'accélérer l'algorithme car en évaluant les meilleurs coups en premier, on peut éviter beaucoup de calcul
+     * Après chaque évaluation, il trie la liste de coups possibles en fonction de leur évaluation.
+     * Ceci permet d'accélérer l'algorithme car en évaluant les meilleurs coups en premier, on peut éviter beaucoup de calculs
      * avec l'optimisation alpha-beta pruning.
      */
     public Move getNextMove() {
@@ -120,7 +120,7 @@ public class Computer extends Player{
 
     /**
      * Fait la même chose que la méthode au-dessus, mais considère seulement les captures. Cela permet de ne pas évaluer des positions
-     * où des captures sont possibles puisque compter les valeurs de pièces pouvant être prise le coup d'après
+     * où des captures sont possibles puisque compter les valeurs de pièces pouvant être prises le coup d'après
      * n'est pas très représentatif de l'évaluation réelle de la position.
      */
     public float evaluateOnlyCaptures(int limit, float alpha, float beta, Board computationalBoard) {

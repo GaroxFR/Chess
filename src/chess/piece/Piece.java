@@ -47,7 +47,7 @@ public abstract class Piece {
     public abstract Set<Move> computePossibleMoves(Board board);
 
     /**
-     * Calcul les cases contrôlées par cette pièce (Ces cases peuvent être affichées en jeu à l'aide la touche 'm'
+     * Calcul les cases contrôlées par cette pièce (Ces cases peuvent être affichées en jeu à l'aide la touche 'm')
      */
     public abstract Set<Position> computeThreatenedPositions(Board board);
 

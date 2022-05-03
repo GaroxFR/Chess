@@ -104,7 +104,7 @@ public class GameFrame extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e){
-        if(plateau.getTimerTurn() == Team.WHITE){
+        if(plateau.getTimerTurn() == Team.WHITE){  //timer : met à jour le temps
             if(secW>0){
                 secW--;
             }else{

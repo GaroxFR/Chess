@@ -17,4 +17,6 @@ Ce dernier contient les classes gérant :
 - les joueurs et l'IA;
 - la classe _Main_ à lancer.
 
+Note : La version de JAVA utilisée est Java 17.
+
 Nous avons créé un dossier comprenant le diagramme UML global ainsi que les diagrammes de la classe _Board_ et des classes héritières de _Piece_ pour plus de lisibilité. 

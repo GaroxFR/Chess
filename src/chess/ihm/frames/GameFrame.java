@@ -74,6 +74,12 @@ public class GameFrame extends JFrame implements ActionListener {
 
         Timer repaintTimer = new Timer(10, e -> {
             this.repaint();
+            if (plateau.isEnded()) {
+                new WelcomeFrame();
+                this.setVisible(false);
+                this.dispose();
+                ((Timer) e.getSource()).stop();
+            }
         });
         repaintTimer.start();
 
@@ -112,6 +118,17 @@ public class GameFrame extends JFrame implements ActionListener {
                 secB=59;
                 minB--;
             }
+        }
+        if (secW <= 0 && minW <= 0) {
+            JOptionPane.showMessageDialog(this, "Temps écoulé, " + playerB + " a gagné");
+            new WelcomeFrame();
+            this.setVisible(false);
+            this.dispose();
+        } else if (secB <= 0 && minB <= 0) {
+            JOptionPane.showMessageDialog(this, "Temps écoulé, " + playerW + " a gagné");
+            new WelcomeFrame();
+            this.setVisible(false);
+            this.dispose();
         }
         timeDisplayW = String.format("temps restant : %02d:%02d", minW, secW);
         timeDisplayB = String.format("temps restant : %02d:%02d", minB, secB);

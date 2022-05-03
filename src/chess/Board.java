@@ -10,6 +10,7 @@ import chess.player.Human;
 import chess.player.Player;
 import chess.player.Team;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -42,6 +43,8 @@ public class Board {
 
     private final ChessAudioPlayer chessAudioPlayer = new ChessAudioPlayer();
     private boolean waitingForPromotion = false;
+
+    private boolean ended = false;
 
     public Board(Player[] players) {
         if (players.length != 2) {
@@ -130,6 +133,7 @@ public class Board {
                         this.restoreHistory();
                         this.playMove(move);
                         this.computePossibleMove();
+                        this.checkEnd();
                         this.askNextMove();
                     }).whenComplete((unused, throwable) -> throwable.printStackTrace());
 
@@ -324,6 +328,21 @@ public class Board {
         this.askNextMove();
     }
 
+    public void checkEnd() {
+        if (this.possibleMoves.isEmpty()) {
+            if (this.checkSources.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Egalité, le  roi ne peut plus bouger mais n'est pac échec");
+            } else {
+                this.switchTimerTurn();
+                JOptionPane.showMessageDialog(null, "Echec et mat ! Victoire de " + this.players[this.timerTurn.getIndex()].getName());
+            }
+            this.ended = true;
+        }else if (this.isDraw()) {
+            JOptionPane.showMessageDialog(null, "Égalité par répétition.");
+            this.ended = true;
+        }
+    }
+
     public Piece getPiece(int x, int y) {
         return this.pieces[x][y];
     }
@@ -371,6 +390,7 @@ public class Board {
             if (moves.size() == 1) {
                 this.playMove(moves.get(0));
                 this.computePossibleMove();
+                this.checkEnd();
                 this.askNextMove();
             }
             this.selectedPiece = null;
@@ -381,6 +401,7 @@ public class Board {
                     this.playMove(move);
                     this.computePossibleMove();
                     this.waitingForPromotion = false;
+                    this.checkEnd();
                     this.askNextMove();
                 }));
             }
@@ -495,5 +516,9 @@ public class Board {
 
     public Team getTimerTurn() {
         return this.timerTurn;
+    }
+
+    public boolean isEnded() {
+        return this.ended;
     }
 }

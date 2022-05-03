@@ -124,11 +124,13 @@ public class GameFrame extends JFrame implements ActionListener {
             new WelcomeFrame();
             this.setVisible(false);
             this.dispose();
+            t.stop();
         } else if (secB <= 0 && minB <= 0) {
             JOptionPane.showMessageDialog(this, "Temps écoulé, " + playerW + " a gagné");
             new WelcomeFrame();
             this.setVisible(false);
             this.dispose();
+            t.stop();
         }
         timeDisplayW = String.format("temps restant : %02d:%02d", minW, secW);
         timeDisplayB = String.format("temps restant : %02d:%02d", minB, secB);

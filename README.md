@@ -1,5 +1,11 @@
 # Chess
 
+Lanière M
+Groupe 49
+ALAGARAJAH Kowsigan
+ANTOINE Zoé
+CHORYNSKI Ewan
+LEMAIRE Lou
 
 Pour lancer le programme, ouvrir toutes les classes et les compiler, puis lancer la classe _Main_.
 Le dossier _res_ contient tous les fichiers multimédias nécessaires au bon fonctionnement du jeu.

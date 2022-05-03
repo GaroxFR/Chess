@@ -3,6 +3,9 @@ package chess.move.component;
 import chess.Board;
 import chess.piece.Piece;
 
+/**
+ * Représente la partie Promotion d'un coup
+ */
 public class Promotion implements MoveComponent {
 
     private final Piece pawn;

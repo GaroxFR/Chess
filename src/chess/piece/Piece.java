@@ -41,8 +41,14 @@ public abstract class Piece {
         this.alive = alive;
     }
 
+    /**
+     * Calcul les coups possible pour cette pièce en particulier.
+     */
     public abstract Set<Move> computePossibleMoves(Board board);
 
+    /**
+     * Calcul les cases contrôlées par cette pièce (Ces cases peuvent être affichées en jeu à l'aide la touche 'm'
+     */
     public abstract Set<Position> computeThreatenedPositions(Board board);
 
     public void setPosition(Position position) {
@@ -61,7 +67,9 @@ public abstract class Piece {
 
     public abstract int getValue();
 
-
+    /**
+     * Permet de créer une copie d'une pièce afin de créer l'environnement de calcul de l'ordinateur sans modifier le plateau principal
+     */
     @Override
     public abstract Piece clone();
 }

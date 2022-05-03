@@ -1,5 +1,6 @@
-package chess;
+package chess.ihm.frames;
 
+import chess.Board;
 import chess.player.Team;
 import chess.player.Player;
 import chess.player.Human;

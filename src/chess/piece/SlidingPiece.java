@@ -12,6 +12,11 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Classe permettant de factoriser les pièces très semblables que sont la tour, le fou et la reine.
+ * Ces pièces peuvent se déplacer d'un nombre illimité de case vide dans certaines directions. Ces directions sont
+ * données en surchargeant le getter getSlidingDirection()
+ */
 public abstract class SlidingPiece extends Piece {
 
     public SlidingPiece(Team team, Position position) {
@@ -21,6 +26,7 @@ public abstract class SlidingPiece extends Piece {
     public SlidingPiece(Team team, Position position, boolean moved) {
         super(team, position, moved);
     }
+
     @Override
     public Set<Move> computePossibleMoves(Board board) {
         Set<Move> moves = new HashSet<>();
@@ -73,6 +79,9 @@ public abstract class SlidingPiece extends Piece {
         return threatenedPositions;
     }
 
+    /**
+     * Ce genre de pièce sont celles qui crée les Pins, cette méthode sert à déterminer si la pièce crée ou non un pinn sur une autre pièce
+     */
     public Optional<PiecePin> computePiecePin(Board board) {
         for (Position direction : this.getSlidingDirections()) {
             Set<Position> positions = new HashSet<>();

@@ -5,6 +5,10 @@ import chess.piece.Piece;
 
 import java.util.Set;
 
+/**
+ * Représente les pièces dont le mouvement est limitée, car quitter une ligne ou une diagonale causerait un échec.
+ * Ces cases peuvent être affichées en jeu avec la touche 'p'
+ */
 public class PiecePin {
 
     private final Piece piece;

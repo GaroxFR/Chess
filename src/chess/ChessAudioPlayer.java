@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Permet de jouer les différents sons de façon async.
+ */
 public class ChessAudioPlayer {
 
     private final String moveSoundPath = "./res/audio/move.wav";

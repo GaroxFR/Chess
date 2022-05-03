@@ -16,6 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+
+/**
+ * Ce panel s'affiche lorsqu'un joueur humain est sur le point de promouvoir un pion.
+ * promotionMap contient les coups correspondants aux promotions aux différentes pièces
+ * moveConsumer est la fonction à exécuter une fois que le joueur à choisi la pièce.
+ */
 public class PromotionPanel extends JPanel implements MouseListener {
 
     private final Map<Class<?>, Move> promotionMoveMap = new HashMap<>();

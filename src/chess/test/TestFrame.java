@@ -1,10 +1,9 @@
 package chess.test;
 
 import chess.Board;
-import chess.BoardPanel;
+import chess.ihm.panels.BoardPanel;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class TestFrame extends JFrame {
 

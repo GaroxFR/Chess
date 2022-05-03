@@ -3,6 +3,9 @@ package chess.move.component;
 import chess.Board;
 import chess.piece.Piece;
 
+/**
+ * Représente la partie capture d'un coup
+ */
 public class Capture implements MoveComponent{
 
     private final Piece capturedPiece;

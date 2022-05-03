@@ -8,6 +8,14 @@ import chess.piece.Piece;
 
 import java.util.Objects;
 
+/**
+ * Représente un coup.
+ * Un coup est composé de la pièce qui bouge, la position de départ, la position d'arrivée ainsi qu'un tableau
+ * contenant des informations complémentaires pour les coups plus spéciaux (captures, roques...)
+ *
+ * Cette classe ne possède aucun setter, elle est immutable. C'est-à-dire qu'elle ne peut pas être modifiée. Ceci permet d'éviter beaucoup de bugs
+ * liés au passage des références dans de multiples méthodes
+ */
 public class Move {
 
     private final Position startPosition;
@@ -72,7 +80,8 @@ public class Move {
             return false;
         }
         Move move = (Move) o;
-        return this.startPosition.equals(move.startPosition) && this.endPosition.equals(move.endPosition);
+        // J'utilise Objects.equals() car les Promotions peuvent être null et cette méthode gère ces cas aussi.
+        return this.startPosition.equals(move.startPosition) && this.endPosition.equals(move.endPosition) && Objects.equals(move.getMoveComponent(Promotion.class), this.getMoveComponent(Promotion.class));
     }
 
     public PreMoveState getPreMoveState() {
@@ -83,6 +92,10 @@ public class Move {
         this.preMoveState = preMoveState;
     }
 
+    /**
+     * Méthode un peu technique permettant de récupérer le MoveComponent correspondant au type clazz.
+     * Example : Promotion p = move.getMoveComponent(Promotion.class)
+     */
     public <T extends MoveComponent> T getMoveComponent(Class<T> clazz) {
         for (MoveComponent moveComponent : this.moveComponents) {
             if (moveComponent.getClass().equals(clazz)) {
@@ -93,6 +106,9 @@ public class Move {
         return null;
     }
 
+    /**
+     * Indispensable afin de dire à la structure HashSet ce qui rend un coup unique.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(this.startPosition, this.endPosition, this.getMoveComponent(Promotion.class));

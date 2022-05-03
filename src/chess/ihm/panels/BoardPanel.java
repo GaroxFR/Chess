@@ -1,6 +1,7 @@
-package chess;
+package chess.ihm.panels;
 
-import chess.ihm.panels.PromotionPanel;
+import chess.Board;
+import chess.Position;
 import chess.move.Move;
 import chess.piece.Piece;
 

@@ -2,6 +2,10 @@ package chess.move;
 
 import chess.move.component.EnPassantPossibleCapture;
 
+/**
+ * Afin d'annuler un coup, il est nécessaire de garder enh mémoire certaines informations sur la position précédent le coup.
+ * C'est exactement le rôle de cette classe.
+ */
 public class PreMoveState {
     private final EnPassantPossibleCapture enPassantPossibleCapture;
     private final boolean hadPieceMove;

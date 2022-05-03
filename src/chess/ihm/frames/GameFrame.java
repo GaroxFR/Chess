@@ -1,5 +1,8 @@
-package chess;
+package chess.ihm.frames;
 
+import chess.Board;
+import chess.ihm.panels.BoardPanel;
+import chess.ihm.panels.CapturedPiecePanel;
 import chess.player.Team;
 
 import javax.swing.*;
@@ -70,9 +73,7 @@ public class GameFrame extends JFrame implements ActionListener {
         rightBloc.setBounds(658, 195, 128, 490);
 
         Timer repaintTimer = new Timer(10, e -> {
-            if (plateau.isShouldRender()) {
-                this.repaint();
-            }
+            this.repaint();
         });
         repaintTimer.start();
 

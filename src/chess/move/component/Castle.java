@@ -4,6 +4,10 @@ import chess.Board;
 import chess.Position;
 import chess.piece.Piece;
 
+/**
+ * Représente la partie Roque d'un coup.
+ * Le déplacement du roi étant géré par le coup lui-même, ce composant s'assure que la tour soit aussi déplacée.
+ */
 public class Castle implements MoveComponent {
     private final Piece rook;
     private final Position oldRookPosition;
